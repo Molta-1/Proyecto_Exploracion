@@ -439,17 +439,85 @@ datos <- read.csv('fifa_player_performance_market_value.csv')
 <h1> LIMPIEZA DE DATOS </h1> 
 
 <div id="limpieza">
-<div class="tit"> Espacio para Títulos dentro de la información </div>
+<div class="tit"> Limpieza de datos general </div>
 
 <texto> 
 
-Dejar espacio en el texto para que se vea separado la parte del código
+Carga del dataset
 
 
 </texto>
 ```{r}
-datos <- read.csv('fifa_player_performance_market_value.csv')
+df_crudo <- read.csv('fifa_player_performance_market_value.csv')
 ```
+
+<texto> 
+
+Carga de librerias
+
+```{r,message=FALSE, warning=FALSE}
+library(dplyr)
+library(tidyr)
+```
+
+</texto>
+
+<texto> 
+
+Inspección inicial 
+Se visualiza la estructura del dataset por medio de una función propia de dyplr llamada "glimpse"
+Esta funciona es una alternativa a str que hemos visto en clase para comprender la estructura del dataset
+
+```{r}
+glimpse(datos)
+```
+
+</texto>
+
+<texto> 
+
+Limpieza y Transformación de Datos con dplyr
+
+```{r}
+df_limpio <- df_crudo %>%
+  # Elimina filas duplicadas basadas en el ID del jugador, usamos keep_all para tener todos los demas registros
+  distinct(player_id, .keep_all = TRUE) %>%
+  
+  # Manejo de valores null o NA (faltantes)
+  # En este caso, eliminamos filas donde falten datos críticos como el nombre, club o en efecto el valor de mercado
+  drop_na(player_name, club, market_value_million_eur) %>%
+  
+  # En este otro reemplazamos los NAs que se encuentran columnas numéricas por la mediana o un valor fijo (0)
+  mutate(
+    matches_played = replace_na(matches_played, 0),
+    goals = replace_na(goals, 0),
+    assists = replace_na(assists, 0)
+  ) %>%
+  
+  # Estandarización de texto (Convertir a mayúsculas nombres de clubes y países entre otros valores de texto)
+  mutate(
+    nationality = toupper(nationality),
+    club = toupper(club),
+    transfer_risk_level = toupper(transfer_risk_level),
+    injury_prone = toupper(injury_prone)
+  ) %>%
+  
+  # Filtrar datos que podrían llegar a considerarse incosistentes, en este caso la edad el jugador que pueda salirse del rango permitido
+  filter(age >= 15 & age <= 50)
+```
+
+</texto>
+
+<texto> 
+
+Visualización del dataset limpio
+
+```{r}
+head(df_limpio,25)
+tail(df_limpio,25)
+```
+
+</texto>
 
 </div>
 </div>
