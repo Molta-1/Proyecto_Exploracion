@@ -95,7 +95,7 @@ div.tit { /* BUSCA CUALQUIER CLASE CON LA ETIQUETA CLASE "tit" */
   color: #FFFFFF;
   font-family: 'Encabezado', sans-serif; 
   background-color: #355872;
-  width: 150px;
+  width: 240px;
   font-size: 16px;
   padding: 5px 10px;
   margin-left: -30px;
@@ -366,7 +366,7 @@ function mostrarContenido2(idContenido) {
 
 
 <div id="desc" class="contenido-dinamico2">
-<h1>DESCRIPCIÓN </h1> 
+<h1>DESCRIPCIÓN DEL DATASET </h1> 
 
 <div id="descripcion">
 <div class="tit"> Dataset </div>
@@ -420,17 +420,137 @@ Con 2800 datos registrados el dataset cuenta con distintas columnas como lo son:
 <h1> LECTURA DE DATOS </h1> 
 
 <div id="lectura">
-<div class="tit"> Espacio para Títulos dentro de la información </div>
+<div class="tit"> Carga de Datos </div>
 
 <texto> 
 
-Dejar espacio en el texto para que se vea separado la parte del código
-
+En este apartado veremos los datos en CRUDO del dataset para ver la información que posee, el tipo de datos que es y si se debe o no realizar una limpieza de datos.
 
 </texto>
+
 ```{r}
 datos <- read.csv('fifa_player_performance_market_value.csv')
 ```
+
+<div class="tit"> Función Head </div>
+
+<texto> 
+
+Se realiza un head para verificar que la información se cargó correctamente mediante la función head, esta función nos muestra los primeros datos que hay dentro del dataset
+
+</texto>
+
+```{r}
+head(datos)
+```
+
+<div class="tit"> Función Tail </div>
+
+<texto> 
+
+Se realiza un tail para terminar de comprobar que los datos se cargaron de manera correcta y que no hubo ningun fallo en el proceso, tail muestra los últimos registros del datset.
+
+</texto>
+
+```{r}
+tail(datos)
+```
+
+<texto> 
+
+En este caso se visualizan los datos de manera completa y coherente.
+
+</texto>
+
+
+<div class="tit"> Función STR </div>
+
+<texto> 
+
+Revisamos qué tipo es cada columna antes de operar con ellas, esto mediante la función str que nos da la información de cada columna.
+
+</texto>
+
+```{r}
+str(datos)
+```
+
+<div class="tit"> Función Sapply </div>
+
+<texto> 
+
+La función sapply lo que realiza es darnos una matriz con la información de los elementos que le digamos, en este caso le indicamos las clases y verificamos que numéricas, enteros y caracteres estén bien clasificados.
+
+</texto>
+
+```{r}
+sapply(datos, class)
+```
+
+<div class="tit"> Función colSums </div>
+
+<texto> 
+
+Antes de continuar con el análisis, revisamos si hay valores nulos en el dataset.
+
+Para esto utilizaremos la función colSums la cual realiza una suma de todos los elementos encontrados en las columnas, en este caso le indicamos que si la columna posee un nulo (as.null) esta la vaya sumando.
+
+</texto>
+
+```{r}
+colSums(is.na(datos))
+```
+
+<texto> 
+
+Afortunadamente, no encontramos ninguno, así que podemos avanzar sin preocupaciones.
+
+</texto>
+
+
+<texto> 
+
+Se verifica si exiten posibles datos duplicados que puedan afectar el analisis.
+
+</texto>
+
+```{r}
+anyDuplicated(datos)
+```
+
+<texto> 
+
+En este caso no existen.
+
+</texto>
+
+<div class="tit"> Función Summary </div>
+
+<texto> 
+
+Por último en el apartado de la lectura de datos poseemos la función summary, esta función es una muy importante en esta etapa ya que de manera similar a la función str esta nos da información de los elementos de la columna, pero, no se resume en eso sino que además nos brinda elementos como la media de los elementos almacenados, el mínimo, el máximo e inclusive información sobre los cuartiles que esta posee.
+
+Esto convierte a summary en un elemento clave a la hora de la visualización de datos.
+
+</texto>
+
+```{r}
+summary(datos)
+```
+
+<div class="tit"> Conclusión de la Lectura </div>
+
+<texto> 
+
+Este conjunto de datos nos pinta una foto clara del fútbol actual: la mayoría de los jugadores tienen alrededor de 28 años. El nivel promedio está en 77 puntos, con un potencial que llega a 81, lo que refleja que muchos aún pueden crecer más.
+
+En cancha, el aporte es bastante balanceado: unos 27 partidos jugados, con 19 goles y 12 asistencias en promedio. Eso sí, hay desde suplentes sin minutos hasta figuras que juegan más de 4,000 minutos por temporada.
+
+El mercado muestra una gran desigualdad: mientras algunos apenas superan el millón de euros, otros alcanzan valores cercanos a los 180 millones, dejando claro quiénes son las estrellas
+
+Finalmente, los contratos suelen tener entre 2 y 3 años restantes, lo que obliga a los clubes a decidir pronto si renuevan, venden o arriesgan perder a sus jugadores gratis.
+
+</texto>
 
 </div>
 </div>
@@ -443,24 +563,31 @@ datos <- read.csv('fifa_player_performance_market_value.csv')
 
 <texto> 
 
-Carga del dataset
-
+En este apartado se va a mostrar el procedimiento realizado para limpiar y estadarizar el dataset, esto permitiendo la búsqueda de obtención de resultados acordes a lo esperado evitando molestias como datos duplicados, errores con los nombres entre otros  
 
 </texto>
+
+<div class="tit"> Carga del dataset </div>
+
+<texto> 
+
+</texto>
+
 ```{r}
 df_crudo <- read.csv('fifa_player_performance_market_value.csv')
 ```
 
+
+<div class="tit"> Carga de Librerías </div>
+
 <texto> 
 
-Carga de librerias
+</texto>
 
 ```{r,message=FALSE, warning=FALSE}
 library(dplyr)
 library(tidyr)
 ```
-
-</texto>
 
 <texto> 
 
@@ -474,9 +601,11 @@ glimpse(datos)
 
 </texto>
 
+<div class="tit"> Limpieza y Transformación de Datos con dplyr </div>
+
 <texto> 
 
-Limpieza y Transformación de Datos con dplyr
+</texto>
 
 ```{r}
 df_limpio <- df_crudo %>%
@@ -506,20 +635,20 @@ df_limpio <- df_crudo %>%
   filter(age >= 15 & age <= 50)
 ```
 
-</texto>
+
+<div class="tit"> Visualización del dataset limpio </div>
 
 <texto> 
 
-Visualización del dataset limpio
+</texto>
 
 ```{r}
-head(df_limpio,25)
-tail(df_limpio,25)
+head(df_limpio,15)
+tail(df_limpio,15)
 # 7. Guardar el dataset limpio
 # write.csv(df_limpio, "Fifa_players_limpio.csv", row.names = FALSE)
 ```
 
-</texto>
 
 </div>
 </div>

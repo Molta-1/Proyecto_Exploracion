@@ -428,7 +428,7 @@ font-family: 'Titulo', sans-serif ;}
 div.tit { 
 color: #FFFFFF;
 font-family: 'Encabezado', sans-serif; background-color: #355872;
-width: 150px;
+width: 240px;
 font-size: 16px;
 padding: 5px 10px;
 margin-left: -30px;
@@ -669,7 +669,7 @@ function mostrarContenido2(idContenido) {
 </ul>
 <div id="desc" class="contenido-dinamico2">
 <h1>
-DESCRIPCIÓN
+DESCRIPCIÓN DEL DATASET
 </h1>
 <div id="descripcion">
 <div class="tit">
@@ -723,13 +723,237 @@ LECTURA DE DATOS
 </h1>
 <div id="lectura">
 <div class="tit">
-Espacio para Títulos dentro de la información
+Carga de Datos
 </div>
 <p><texto></p>
-<p>Dejar espacio en el texto para que se vea separado la parte del
-código</p>
+<p>En este apartado veremos los datos en CRUDO del dataset para ver la
+información que posee, el tipo de datos que es y si se debe o no
+realizar una limpieza de datos.</p>
 <p></texto></p>
 <pre class="r"><code>datos &lt;- read.csv(&#39;fifa_player_performance_market_value.csv&#39;)</code></pre>
+<div class="tit">
+Función Head
+</div>
+<p><texto></p>
+<p>Se realiza un head para verificar que la información se cargó
+correctamente mediante la función head, esta función nos muestra los
+primeros datos que hay dentro del dataset</p>
+<p></texto></p>
+<pre class="r"><code>head(datos)</code></pre>
+<pre><code>##   player_id player_name age nationality            club position overall_rating
+## 1         1    Player_1  23     Germany       Liverpool       ST             65
+## 2         2    Player_2  36     England    FC Barcelona       ST             90
+## 3         3    Player_3  31      France        Juventus       RB             75
+## 4         4    Player_4  27    Portugal Manchester City       LW             90
+## 5         5    Player_5  24      Brazil       Liverpool      CDM             84
+## 6         6    Player_6  37   Argentina Manchester City       CM             92
+##   potential_rating matches_played goals assists minutes_played
+## 1               87              8     6      14           2976
+## 2               76             19     3      18           2609
+## 3               91             34    12      15           1158
+## 4               86             35    18      13            145
+## 5               96             41     6       6           2226
+## 6               91             35     9       7            263
+##   market_value_million_eur contract_years_left injury_prone transfer_risk_level
+## 1                   122.51                   3           No                 Low
+## 2                    88.47                   5           No                High
+## 3                    20.24                   3           No              Medium
+## 4                   164.29                   0          Yes              Medium
+## 5                   121.34                   4           No                 Low
+## 6                    98.51                   5          Yes                 Low</code></pre>
+<div class="tit">
+Función Tail
+</div>
+<p><texto></p>
+<p>Se realiza un tail para terminar de comprobar que los datos se
+cargaron de manera correcta y que no hubo ningun fallo en el proceso,
+tail muestra los últimos registros del datset.</p>
+<p></texto></p>
+<pre class="r"><code>tail(datos)</code></pre>
+<pre><code>##      player_id player_name age nationality            club position
+## 2795      2795 Player_2795  36   Argentina             PSG       RW
+## 2796      2796 Player_2796  32     Germany   Bayern Munich       CB
+## 2797      2797 Player_2797  31 Netherlands     Real Madrid       LB
+## 2798      2798 Player_2798  31      Brazil Manchester City       ST
+## 2799      2799 Player_2799  22 Netherlands     Real Madrid       ST
+## 2800      2800 Player_2800  31     Germany       Liverpool      CDM
+##      overall_rating potential_rating matches_played goals assists
+## 2795             67               93             11    38      11
+## 2796             67               65             47    10      12
+## 2797             67               85              5     7       1
+## 2798             93               88              8    36       8
+## 2799             75               73             34     7       6
+## 2800             72               90              7    11      12
+##      minutes_played market_value_million_eur contract_years_left injury_prone
+## 2795           2470                    92.54                   3           No
+## 2796           4067                    99.49                   3           No
+## 2797           3460                    74.87                   4           No
+## 2798           3768                    27.01                   3           No
+## 2799           1934                    54.95                   4           No
+## 2800           2319                    44.83                   5          Yes
+##      transfer_risk_level
+## 2795                 Low
+## 2796              Medium
+## 2797                 Low
+## 2798              Medium
+## 2799              Medium
+## 2800                 Low</code></pre>
+<p><texto></p>
+<p>En este caso se visualizan los datos de manera completa y
+coherente.</p>
+<p></texto></p>
+<div class="tit">
+Función STR
+</div>
+<p><texto></p>
+<p>Revisamos qué tipo es cada columna antes de operar con ellas, esto
+mediante la función str que nos da la información de cada columna.</p>
+<p></texto></p>
+<pre class="r"><code>str(datos)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    2800 obs. of  16 variables:
+##  $ player_id               : int  1 2 3 4 5 6 7 8 9 10 ...
+##  $ player_name             : chr  &quot;Player_1&quot; &quot;Player_2&quot; &quot;Player_3&quot; &quot;Player_4&quot; ...
+##  $ age                     : int  23 36 31 27 24 37 23 35 39 27 ...
+##  $ nationality             : chr  &quot;Germany&quot; &quot;England&quot; &quot;France&quot; &quot;Portugal&quot; ...
+##  $ club                    : chr  &quot;Liverpool&quot; &quot;FC Barcelona&quot; &quot;Juventus&quot; &quot;Manchester City&quot; ...
+##  $ position                : chr  &quot;ST&quot; &quot;ST&quot; &quot;RB&quot; &quot;LW&quot; ...
+##  $ overall_rating          : int  65 90 75 90 84 92 72 69 83 69 ...
+##  $ potential_rating        : int  87 76 91 86 96 91 66 97 90 92 ...
+##  $ matches_played          : int  8 19 34 35 41 35 53 8 21 0 ...
+##  $ goals                   : int  6 3 12 18 6 9 24 34 24 28 ...
+##  $ assists                 : int  14 18 15 13 6 7 6 17 23 5 ...
+##  $ minutes_played          : int  2976 2609 1158 145 2226 263 4299 3101 2106 3080 ...
+##  $ market_value_million_eur: num  122.5 88.5 20.2 164.3 121.3 ...
+##  $ contract_years_left     : int  3 5 3 0 4 5 1 0 3 1 ...
+##  $ injury_prone            : chr  &quot;No&quot; &quot;No&quot; &quot;No&quot; &quot;Yes&quot; ...
+##  $ transfer_risk_level     : chr  &quot;Low&quot; &quot;High&quot; &quot;Medium&quot; &quot;Medium&quot; ...</code></pre>
+<div class="tit">
+Función Sapply
+</div>
+<p><texto></p>
+<p>La función sapply lo que realiza es darnos una matriz con la
+información de los elementos que le digamos, en este caso le indicamos
+las clases y verificamos que numéricas, enteros y caracteres estén bien
+clasificados.</p>
+<p></texto></p>
+<pre class="r"><code>sapply(datos, class)</code></pre>
+<pre><code>##                player_id              player_name                      age 
+##                &quot;integer&quot;              &quot;character&quot;                &quot;integer&quot; 
+##              nationality                     club                 position 
+##              &quot;character&quot;              &quot;character&quot;              &quot;character&quot; 
+##           overall_rating         potential_rating           matches_played 
+##                &quot;integer&quot;                &quot;integer&quot;                &quot;integer&quot; 
+##                    goals                  assists           minutes_played 
+##                &quot;integer&quot;                &quot;integer&quot;                &quot;integer&quot; 
+## market_value_million_eur      contract_years_left             injury_prone 
+##                &quot;numeric&quot;                &quot;integer&quot;              &quot;character&quot; 
+##      transfer_risk_level 
+##              &quot;character&quot;</code></pre>
+<div class="tit">
+Función colSums
+</div>
+<p><texto></p>
+<p>Antes de continuar con el análisis, revisamos si hay valores nulos en
+el dataset.</p>
+<p>Para esto utilizaremos la función colSums la cual realiza una suma de
+todos los elementos encontrados en las columnas, en este caso le
+indicamos que si la columna posee un nulo (as.null) esta la vaya
+sumando.</p>
+<p></texto></p>
+<pre class="r"><code>colSums(is.na(datos))</code></pre>
+<pre><code>##                player_id              player_name                      age 
+##                        0                        0                        0 
+##              nationality                     club                 position 
+##                        0                        0                        0 
+##           overall_rating         potential_rating           matches_played 
+##                        0                        0                        0 
+##                    goals                  assists           minutes_played 
+##                        0                        0                        0 
+## market_value_million_eur      contract_years_left             injury_prone 
+##                        0                        0                        0 
+##      transfer_risk_level 
+##                        0</code></pre>
+<p><texto></p>
+<p>Afortunadamente, no encontramos ninguno, así que podemos avanzar sin
+preocupaciones.</p>
+<p></texto></p>
+<p><texto></p>
+<p>Se verifica si exiten posibles datos duplicados que puedan afectar el
+analisis.</p>
+<p></texto></p>
+<pre class="r"><code>anyDuplicated(datos)</code></pre>
+<pre><code>## [1] 0</code></pre>
+<p><texto></p>
+<p>En este caso no existen.</p>
+<p></texto></p>
+<div class="tit">
+Función Summary
+</div>
+<p><texto></p>
+<p>Por último en el apartado de la lectura de datos poseemos la función
+summary, esta función es una muy importante en esta etapa ya que de
+manera similar a la función str esta nos da información de los elementos
+de la columna, pero, no se resume en eso sino que además nos brinda
+elementos como la media de los elementos almacenados, el mínimo, el
+máximo e inclusive información sobre los cuartiles que esta posee.</p>
+<p>Esto convierte a summary en un elemento clave a la hora de la
+visualización de datos.</p>
+<p></texto></p>
+<pre class="r"><code>summary(datos)</code></pre>
+<pre><code>##    player_id      player_name             age        nationality       
+##  Min.   :   1.0   Length:2800        Min.   :17.00   Length:2800       
+##  1st Qu.: 700.8   Class :character   1st Qu.:22.00   Class :character  
+##  Median :1400.5   Mode  :character   Median :28.00   Mode  :character  
+##  Mean   :1400.5                      Mean   :27.95                     
+##  3rd Qu.:2100.2                      3rd Qu.:34.00                     
+##  Max.   :2800.0                      Max.   :39.00                     
+##      club             position         overall_rating  potential_rating
+##  Length:2800        Length:2800        Min.   :60.00   Min.   :65.00   
+##  Class :character   Class :character   1st Qu.:68.00   1st Qu.:73.00   
+##  Mode  :character   Mode  :character   Median :77.00   Median :82.00   
+##                                        Mean   :76.87   Mean   :81.56   
+##                                        3rd Qu.:85.00   3rd Qu.:90.00   
+##                                        Max.   :94.00   Max.   :98.00   
+##  matches_played      goals          assists      minutes_played
+##  Min.   : 0.00   Min.   : 0.00   Min.   : 0.00   Min.   :   0  
+##  1st Qu.:13.75   1st Qu.: 9.00   1st Qu.: 6.00   1st Qu.:1131  
+##  Median :27.00   Median :19.00   Median :12.00   Median :2251  
+##  Mean   :27.14   Mean   :19.26   Mean   :12.02   Mean   :2250  
+##  3rd Qu.:41.00   3rd Qu.:30.00   3rd Qu.:18.00   3rd Qu.:3366  
+##  Max.   :54.00   Max.   :39.00   Max.   :24.00   Max.   :4497  
+##  market_value_million_eur contract_years_left injury_prone      
+##  Min.   :  0.67           Min.   :0.000       Length:2800       
+##  1st Qu.: 45.35           1st Qu.:1.000       Class :character  
+##  Median : 89.17           Median :3.000       Mode  :character  
+##  Mean   : 90.57           Mean   :2.528                         
+##  3rd Qu.:136.68           3rd Qu.:4.000                         
+##  Max.   :179.96           Max.   :5.000                         
+##  transfer_risk_level
+##  Length:2800        
+##  Class :character   
+##  Mode  :character   
+##                     
+##                     
+## </code></pre>
+<div class="tit">
+Conclusión de la Lectura
+</div>
+<p><texto></p>
+<p>Este conjunto de datos nos pinta una foto clara del fútbol actual: la
+mayoría de los jugadores tienen alrededor de 28 años. El nivel promedio
+está en 77 puntos, con un potencial que llega a 81, lo que refleja que
+muchos aún pueden crecer más.</p>
+<p>En cancha, el aporte es bastante balanceado: unos 27 partidos
+jugados, con 19 goles y 12 asistencias en promedio. Eso sí, hay desde
+suplentes sin minutos hasta figuras que juegan más de 4,000 minutos por
+temporada.</p>
+<p>El mercado muestra una gran desigualdad: mientras algunos apenas
+superan el millón de euros, otros alcanzan valores cercanos a los 180
+millones, dejando claro quiénes son las estrellas</p>
+<p>Finalmente, los contratos suelen tener entre 2 y 3 años restantes, lo
+que obliga a los clubes a decidir pronto si renuevan, venden o arriesgan
+perder a sus jugadores gratis.</p>
+<p></texto></p>
 </div>
 </div>
 <div id="limp" class="contenido-dinamico2">
@@ -741,14 +965,24 @@ LIMPIEZA DE DATOS
 Limpieza de datos general
 </div>
 <p><texto></p>
-<p>Carga del dataset</p>
+<p>En este apartado se va a mostrar el procedimiento realizado para
+limpiar y estadarizar el dataset, esto permitiendo la búsqueda de
+obtención de resultados acordes a lo esperado evitando molestias como
+datos duplicados, errores con los nombres entre otros</p>
+<p></texto></p>
+<div class="tit">
+Carga del dataset
+</div>
+<p><texto></p>
 <p></texto></p>
 <pre class="r"><code>df_crudo &lt;- read.csv(&#39;fifa_player_performance_market_value.csv&#39;)</code></pre>
+<div class="tit">
+Carga de Librerías
+</div>
 <p><texto></p>
-<p>Carga de librerias</p>
+<p></texto></p>
 <pre class="r"><code>library(dplyr)
 library(tidyr)</code></pre>
-<p></texto></p>
 <p><texto></p>
 <p>Inspección inicial Se visualiza la estructura del dataset por medio
 de una función propia de dyplr llamada “glimpse” Esta funciona es una
@@ -774,8 +1008,11 @@ del dataset</p>
 ## $ injury_prone             &lt;chr&gt; &quot;No&quot;, &quot;No&quot;, &quot;No&quot;, &quot;Yes&quot;, &quot;No&quot;, &quot;Yes&quot;, &quot;No&quot;, &quot;…
 ## $ transfer_risk_level      &lt;chr&gt; &quot;Low&quot;, &quot;High&quot;, &quot;Medium&quot;, &quot;Medium&quot;, &quot;Low&quot;, &quot;Lo…</code></pre>
 <p></texto></p>
+<div class="tit">
+Limpieza y Transformación de Datos con dplyr
+</div>
 <p><texto></p>
-<p>Limpieza y Transformación de Datos con dplyr</p>
+<p></texto></p>
 <pre class="r"><code>df_limpio &lt;- df_crudo %&gt;%
   # Elimina filas duplicadas basadas en el ID del jugador, usamos keep_all para tener todos los demas registros
   distinct(player_id, .keep_all = TRUE) %&gt;%
@@ -801,10 +1038,12 @@ del dataset</p>
   
   # Filtrar datos que podrían llegar a considerarse incosistentes, en este caso la edad el jugador que pueda salirse del rango permitido
   filter(age &gt;= 15 &amp; age &lt;= 50)</code></pre>
-<p></texto></p>
+<div class="tit">
+Visualización del dataset limpio
+</div>
 <p><texto></p>
-<p>Visualización del dataset limpio</p>
-<pre class="r"><code>head(df_limpio,25)</code></pre>
+<p></texto></p>
+<pre class="r"><code>head(df_limpio,15)</code></pre>
 <pre><code>##    player_id player_name age nationality            club position
 ## 1          1    Player_1  23     GERMANY       LIVERPOOL       ST
 ## 2          2    Player_2  36     ENGLAND    FC BARCELONA       ST
@@ -821,16 +1060,6 @@ del dataset</p>
 ## 13        13   Player_13  20   ARGENTINA   BAYERN MUNICH       LW
 ## 14        14   Player_14  24      FRANCE     REAL MADRID       CM
 ## 15        15   Player_15  19       SPAIN       LIVERPOOL       CM
-## 16        16   Player_16  38      FRANCE   BAYERN MUNICH       RW
-## 17        17   Player_17  37      BRAZIL MANCHESTER CITY       LB
-## 18        18   Player_18  18     GERMANY             PSG       RB
-## 19        19   Player_19  28     GERMANY        JUVENTUS       LW
-## 20        20   Player_20  22     GERMANY       LIVERPOOL       CM
-## 21        21   Player_21  18       SPAIN     REAL MADRID       RW
-## 22        22   Player_22  37     GERMANY        JUVENTUS       LW
-## 23        23   Player_23  17      BRAZIL   BAYERN MUNICH       CB
-## 24        24   Player_24  28      FRANCE        JUVENTUS       CM
-## 25        25   Player_25  38       SPAIN        JUVENTUS       CB
 ##    overall_rating potential_rating matches_played goals assists minutes_played
 ## 1              65               87              8     6      14           2976
 ## 2              90               76             19     3      18           2609
@@ -847,16 +1076,6 @@ del dataset</p>
 ## 13             62               97             36    11      22           1360
 ## 14             93               84             37     5       2           2838
 ## 15             87               94             18     9      16           1726
-## 16             78               72              7     1      21           2289
-## 17             82               81             41    24      18            907
-## 18             91               65             42     6      14           1183
-## 19             72               67             31    39       5           2824
-## 20             92               90             12    22      11           1258
-## 21             93               95             19    10      18            198
-## 22             92               72             35    35       5           1056
-## 23             64               72             42    22      10           2455
-## 24             62               92             43     6      19           3365
-## 25             66               68             36    26      19           1260
 ##    market_value_million_eur contract_years_left injury_prone
 ## 1                    122.51                   3           NO
 ## 2                     88.47                   5           NO
@@ -873,16 +1092,6 @@ del dataset</p>
 ## 13                    87.53                   5           NO
 ## 14                    63.31                   5           NO
 ## 15                   142.19                   3          YES
-## 16                    18.37                   0          YES
-## 17                    37.30                   0           NO
-## 18                     0.79                   3          YES
-## 19                    67.45                   2          YES
-## 20                    52.77                   5           NO
-## 21                   156.13                   4          YES
-## 22                   134.37                   2          YES
-## 23                    15.66                   3           NO
-## 24                   133.50                   4          YES
-## 25                   121.73                   0           NO
 ##    transfer_risk_level
 ## 1                  LOW
 ## 2                 HIGH
@@ -898,29 +1107,9 @@ del dataset</p>
 ## 12              MEDIUM
 ## 13              MEDIUM
 ## 14                HIGH
-## 15              MEDIUM
-## 16              MEDIUM
-## 17              MEDIUM
-## 18              MEDIUM
-## 19              MEDIUM
-## 20              MEDIUM
-## 21              MEDIUM
-## 22                HIGH
-## 23                 LOW
-## 24              MEDIUM
-## 25                 LOW</code></pre>
-<pre class="r"><code>tail(df_limpio,25)</code></pre>
+## 15              MEDIUM</code></pre>
+<pre class="r"><code>tail(df_limpio,15)</code></pre>
 <pre><code>##      player_id player_name age nationality            club position
-## 2776      2776 Player_2776  35       SPAIN             PSG       GK
-## 2777      2777 Player_2777  32      FRANCE       LIVERPOOL       RW
-## 2778      2778 Player_2778  29   ARGENTINA             PSG       CB
-## 2779      2779 Player_2779  20     GERMANY        JUVENTUS       RB
-## 2780      2780 Player_2780  39     GERMANY    FC BARCELONA       GK
-## 2781      2781 Player_2781  33     ENGLAND       LIVERPOOL       LB
-## 2782      2782 Player_2782  39   ARGENTINA MANCHESTER CITY       RW
-## 2783      2783 Player_2783  17     ENGLAND     REAL MADRID       ST
-## 2784      2784 Player_2784  34      FRANCE     REAL MADRID       CM
-## 2785      2785 Player_2785  36    PORTUGAL       LIVERPOOL       CB
 ## 2786      2786 Player_2786  33 NETHERLANDS        JUVENTUS       RW
 ## 2787      2787 Player_2787  31      BRAZIL    FC BARCELONA       ST
 ## 2788      2788 Player_2788  27   ARGENTINA     REAL MADRID       CB
@@ -937,16 +1126,6 @@ del dataset</p>
 ## 2799      2799 Player_2799  22 NETHERLANDS     REAL MADRID       ST
 ## 2800      2800 Player_2800  31     GERMANY       LIVERPOOL      CDM
 ##      overall_rating potential_rating matches_played goals assists
-## 2776             90               97             40    32      11
-## 2777             68               67             30     1      20
-## 2778             76               68             26    14      20
-## 2779             78               68             36    35      23
-## 2780             63               73              1     4      12
-## 2781             70               81             53    14      17
-## 2782             81               81             46     9       6
-## 2783             63               97              8    16      24
-## 2784             76               84             18    33      22
-## 2785             67               78             41    23       4
 ## 2786             93               86             35     9      15
 ## 2787             70               91              9    29      21
 ## 2788             90               67             39     2       3
@@ -963,16 +1142,6 @@ del dataset</p>
 ## 2799             75               73             34     7       6
 ## 2800             72               90              7    11      12
 ##      minutes_played market_value_million_eur contract_years_left injury_prone
-## 2776           1523                   104.96                   1           NO
-## 2777           2703                   168.87                   1           NO
-## 2778           1972                    51.57                   5           NO
-## 2779            616                    82.86                   2          YES
-## 2780           4169                   118.09                   0           NO
-## 2781           2621                   152.12                   0           NO
-## 2782           4241                    45.97                   0           NO
-## 2783           2093                    50.81                   0           NO
-## 2784           1764                   159.39                   4           NO
-## 2785           3176                    14.91                   1           NO
 ## 2786           1132                   109.18                   2           NO
 ## 2787           4216                   154.95                   4           NO
 ## 2788           3570                   165.95                   1           NO
@@ -989,16 +1158,6 @@ del dataset</p>
 ## 2799           1934                    54.95                   4           NO
 ## 2800           2319                    44.83                   5          YES
 ##      transfer_risk_level
-## 2776                HIGH
-## 2777                 LOW
-## 2778              MEDIUM
-## 2779                 LOW
-## 2780                 LOW
-## 2781              MEDIUM
-## 2782              MEDIUM
-## 2783                 LOW
-## 2784              MEDIUM
-## 2785              MEDIUM
 ## 2786                 LOW
 ## 2787              MEDIUM
 ## 2788                 LOW
@@ -1014,7 +1173,8 @@ del dataset</p>
 ## 2798              MEDIUM
 ## 2799              MEDIUM
 ## 2800                 LOW</code></pre>
-<p></texto></p>
+<pre class="r"><code># 7. Guardar el dataset limpio
+# write.csv(df_limpio, &quot;Fifa_players_limpio.csv&quot;, row.names = FALSE)</code></pre>
 </div>
 </div>
 <div id="edai" class="contenido-dinamico2">
