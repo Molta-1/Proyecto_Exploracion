@@ -515,6 +515,8 @@ Visualización del dataset limpio
 ```{r}
 head(df_limpio,25)
 tail(df_limpio,25)
+# 7. Guardar el dataset limpio
+# write.csv(df_limpio, "Fifa_players_limpio.csv", row.names = FALSE)
 ```
 
 </texto>
