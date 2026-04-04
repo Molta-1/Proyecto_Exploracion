@@ -377,6 +377,12 @@ FIFA Player Performance & Market Value Dataset.
 
 Este es el dataset con el que vamos a realizar el proyecto y tal y como su nombre lo indica este dataset recopila y analiza las actuaciones de jugadores de futbol profesionales, además de los atributos de sus habilidades y el valor en el mercado gracias a su desempeño en el videojuego FIFA.
 
+</texto>
+
+<div class="tit"> Descripción de Columnas </div>
+
+<texto> 
+
 Con 2800 datos registrados el dataset cuenta con distintas columnas como lo son:
 
   1) player_id: Esto es un identificador único para cada jugador, evitando así confusión de a que jugador pertenece la información almacenada.
@@ -659,44 +665,59 @@ tail(df_limpio,15)
 <div id="EDA">
 <div class="tit"> Análisis Exploratorio de datos (EDA)</div>
 
+<texto>
 
-#### El análisis de datos exploratorio (EDA) tiene por objetivo identificar las principales características de un conjunto de datos mediante un número reducido de gráficos y/o valores.
+El análisis de datos exploratorio (EDA) tiene por objetivo identificar las principales características de un conjunto de datos mediante un número reducido de gráficos y/o valores.
 
+</texto>
 
 <div class="tit"> Carga del dataset </div>
+</texto>
 
+<texto> 
 ```{r}
 datos <- read.csv('fifa_player_performance_market_value.csv')
 ```
 <div class="tit"> Visualización inicial</div>
+
+<texto> 
+
+</texto>
 ```{r}
 head(datos, 10)
 tail(datos, 10)
 ```
 <div class="tit"> Carga de Librerías</div>
 
+<texto> 
+
+</texto>
 ```{r}
-library(dplyr)
-library(tidyr)
-library(skimr)
-library(tibble)
-library(ggplot2)
+suppressWarnings(library(dplyr))
+suppressWarnings(library(tidyr))
+suppressWarnings(library(skimr))
+suppressWarnings(library(tibble))
+suppressWarnings(library(ggplot2))
 
 ```
 
 <div class="tit">Inspección inicial</div>
+<texto>
 
-#### Se visualiza la estructura del dataset por medio de una función propia de dyplr llamada “glimpse”, compararándola a "str" estudiada en clase
+Se visualiza la estructura del dataset por medio de una función propia de dyplr llamada “glimpse”, compararándola a "str" estudiada en clase
 
+</texto>
 ```{r}
 glimpse(datos)
 str(datos)
 ```
 
 <div class="tit">Medidas de Posición</div>
+<texto>
 
-#### Estadísticas básicas usando "summary" vs "skim" 
+Primero mostraremos las diferencias que hay en la estadísticas básicas usando "summary" vs "skim" 
 
+</texto>
 
 ```{r}
 
@@ -705,7 +726,10 @@ skim(datos)
 
 ```
 
-#### Verificación de los datos vistos en skim ( NA por columna )
+<div class="tit"> Verificación de los datos vistos en skim ( NA por columna ) </div>
+<texto> 
+
+</texto>
 ```{r}
 # Conteo de NA por columna
 na_count <- colSums(is.na(datos))
@@ -713,6 +737,9 @@ na_count
 ```
 
 <div class="tit">Limpiando el DataSet (Según Limpieza) y agregando nuevos criterios </div>
+<texto> 
+
+</texto>
 ```{r}
 library(dplyr)
 library(tidyr)
@@ -768,26 +795,36 @@ datos_limpio_sl <- datos_limpio_sl %>%
 ```
 
 
-#### Visualización datos limpios
+<div class="tit"> Visualización datos limpios </div>
+<texto> 
+
+</texto>
 ```{r}
 head(datos_limpio_sl, 2)
 tail(datos_limpio_sl, 2)
 ```
 
-#### Removiendo columna Player_Id
+<div class="tit"> Removiendo columna Player_Id </div>
+<texto> 
 
+</texto>
 ```{r}
 datos_limpio_eda <- datos_limpio_sl %>% select(-player_id)
 head(datos_limpio_eda, 2)
 
 ```
+<texto> 
 
-##### La variable player_id fue eliminada debido a que corresponde a un identificador único y no aporta información analítica relevante para el modelado ni el análisis exploratorio.
+La variable player_id fue eliminada debido a que corresponde a un identificador único y no aporta información analítica relevante para el modelado ni el análisis exploratorio.
+
+</texto>
 
 <div class="tit"> Medidas cuantitativas de resumen </div>
+<texto> 
 
-##### Se utilizan métricas derivadas para normalizar el rendimiento y evaluar el potencial de crecimiento de los jugadores, mejorando la comparabilidad entre observaciones.
+Se utilizan métricas derivadas para normalizar el rendimiento y evaluar el potencial de crecimiento de los jugadores, mejorando la comparabilidad entre observaciones.
 
+</texto>
 ```{r}
 
 datos_limpio_eda <- datos_limpio_eda %>%
@@ -830,9 +867,16 @@ colnames(datos_limpio_eda)
 
 
 <div class="tit"> Visualización de datos </div>
+<texto> 
 
-#### Cantidad de jugadores por nacionalidad (y porcentaje) 
+Ahora procederemos al apartado de visualización de datos, ya que anteriormente se trabajaron en estos podemos utilizar distintas herramientas visuales para mostrar de mejor manera la información contenida
 
+</texto>
+
+<div class="tit"> Cantidad de jugadores por nacionalidad (y porcentaje) </div>
+<texto> 
+
+</texto>
 ```{r, fig.align="center"}
 
 par(mar = c(9, 5, 4, 2))  # abajo, izquierda, arriba, derecha
@@ -869,14 +913,19 @@ text(
 
 ```
 
-##### Verificación cantidades
+<div class="tit"> Verificación cantidades </div>
+<texto> 
+
+</texto>
 ```{r}
 conteo_nat
 sum(conteo_nat)
 ```
 
-#### Cantidad de jugadores por posición 
+<div class="tit"> Cantidad de jugadores por posición </div>
+<texto> 
 
+</texto>
 ```{r, fig.align="center"}
 
 conteo_pos <- sort(table(datos_limpio_eda$position), decreasing = TRUE)
@@ -892,7 +941,10 @@ barplot(
 )
 ```
 
-##### Verificación cantidades
+<div class="tit"> Verificación cantidades </div>
+<texto> 
+
+</texto>
 ```{r}
 max(table(datos_limpio_eda$position))
 min(conteo_pos)
@@ -900,24 +952,28 @@ conteo_pos
 
 ```
 
-#### Boxplot de Goles (goals) por posición
+<div class="tit"> Boxplot de Goles (goals) por posición </div>
+<texto> 
 
+</texto>
 ```{r, fig.align="center"}
 boxplot(
   goals ~ position,
   data = datos_limpio_eda,
   las = 2,
-  col = "lightgreen",
+  col = "#FF9149",
   main = "Distribución de goles por posición",
   ylab = "Goles",
   xlab = "Posición"
 )
 ```
+<div class="tit"> Valor de Mercado por Posición </div>
+<texto> 
 
-
+</texto>
 ```{r, fig.align="center"}
 ggplot(datos_limpio_eda, aes(x = position, y = market_value_million_eur)) +
-  geom_boxplot(fill = "gold") +
+  geom_boxplot(fill = "#FF9149") +
   labs(
     title = "Valor de mercado por posición",
     x = "Posición",
@@ -926,7 +982,10 @@ ggplot(datos_limpio_eda, aes(x = position, y = market_value_million_eur)) +
   theme_minimal()
 ```
 
-#### Overal Rating
+<div class="tit"> Overal Rating </div>
+<texto> 
+
+</texto>
 
 ```{r, fig.align="center"}
 hist(
@@ -940,7 +999,10 @@ hist(
 
 ```
 
-#### Overal Rating vs Potencial ( Puede mejorar ? )
+<div class="tit">  Overal Rating vs Potencial ( Puede mejorar ? ) </div>
+<texto> 
+
+</texto>
 ```{r, fig.align="center"}
 
 brecha_potencial <- datos_limpio_eda$potential_rating - datos_limpio_eda$overall_rating
@@ -948,7 +1010,7 @@ brecha_potencial <- datos_limpio_eda$potential_rating - datos_limpio_eda$overall
 hist(
   brecha_potencial,
   breaks = 20,
-  col = "purple",
+  col = "#355872",
   main = "Brecha entre Potential y Overall rating",
   xlab = "Potencial - Overall Rating",
   ylab = "Frecuencia"
@@ -958,7 +1020,10 @@ id_brecha_max <- which.max(brecha_potencial)
 datos_limpio_eda$player_name[id_brecha_max]
 ```
 
-Variable minutos jugados
+<div class="tit"> Variable minutos jugados</div>
+<texto> 
+
+</texto>
 ```{r, fig.align="center"}
 
 datos_limpio_eda %>%
@@ -974,12 +1039,15 @@ datos_limpio_eda %>%
 
 ```
 
-#### Distribución según valor de mercado 
+<div class="tit"> Distribución según valor de mercado </div>
+<texto> 
+
+</texto>
 
 ```{r, fig.align="center"}
 
 ggplot(datos_limpio_eda, aes(x = market_value_million_eur)) +
-  geom_histogram(bins = 30, fill = "gold", color = "black") +
+  geom_histogram(bins = 30, fill = "#FF9149", color = "black") +
   labs(
     title = "Distribución del valor de mercado",
     x = "Valor (millones €)",
@@ -989,7 +1057,10 @@ ggplot(datos_limpio_eda, aes(x = market_value_million_eur)) +
 
 ```
 
-Distribución de partidos jugados
+<div class="tit"> Distribución de partidos jugados</div>
+<texto> 
+
+</texto>
 
 ```{r, fig.align="center"}
 
@@ -997,7 +1068,7 @@ Distribución de partidos jugados
 hist(
   datos_limpio_eda$matches_played,
   breaks = 20,
-  col = "orange",
+  col = "#FF9149",
   main = "Distribución de partidos jugados",
   xlab = "Partidos jugados"
 )
@@ -1005,7 +1076,10 @@ hist(
 
 ```
 
-#### Goles vs Asistencias
+<div class="tit"> Goles vs Asistencias</div>
+<texto> 
+
+</texto>
 
 ```{r, fig.align="center"}
 
@@ -1018,7 +1092,7 @@ datos_limpio_eda <- datos_limpio_eda %>%
 
 
 ggplot(datos_limpio_eda, aes(x = goals_90, y = assists_90)) +
-  geom_point(alpha = 0.6, color = "darkorange") +
+  geom_point(alpha = 0.6, color = "#FF9149") +
   labs(
     title = "Goles por 90 vs Asistencias por 90 minutos",
     x = "Goles por 90",
@@ -1030,7 +1104,10 @@ ggplot(datos_limpio_eda, aes(x = goals_90, y = assists_90)) +
 
 ```
 
-#### Muestra jugador más destacado segun Goles y Asistencias 
+<div class="tit"> Muestra jugador más destacado segun Goles y Asistencias </div>
+<texto> 
+
+</texto>
 
 ```{r, fig.align="center"}
 
@@ -1045,7 +1122,7 @@ datos_limpio_eda %>%
   mutate(goals_90 = goals / minutes_played * 90,
          assists_90 = assists / minutes_played * 90) %>%
   ggplot(aes(x = goals_90, y = assists_90)) +
-  geom_point(alpha = 0.6, color = "darkorange") +
+  geom_point(alpha = 0.6, color = "#FF9149") +
   geom_text(
     data = top10_goals90,
     aes(label = player_name),
@@ -1061,7 +1138,10 @@ datos_limpio_eda %>%
   theme_minimal()
 ```
 
-#### Valor de mercado vs Propenso a lesiones
+<div class="tit">  Valor de mercado vs Propenso a lesiones </div>
+<texto> 
+
+</texto>
 
 ```{r, fig.align="center"}
 
@@ -1081,7 +1161,7 @@ boxplot(
 ```{r, fig.align="center"}
 
 ggplot(datos_limpio_eda, aes(x = transfer_risk_level, y = market_value_million_eur)) +
-  geom_boxplot(fill = "tan") +
+  geom_boxplot(fill = "#91C8E4") +
   labs(
     title = "Valor de mercado vs Riesgo de transferencia",
     x = "Nivel de riesgo",
@@ -1097,7 +1177,7 @@ ggplot(datos_limpio_eda, aes(x = transfer_risk_level, y = market_value_million_e
 
 ggplot(datos_limpio_eda,
        aes(x = overall_rating, y = market_value_million_eur)) +
-  geom_point(alpha = 0.6, color = "darkgreen") +
+  geom_point(alpha = 0.6, color = "#91C8E4") +
   scale_y_log10() +
   labs(
     title = "Valor de mercado vs Overall Rating (escala logarítmica)",
