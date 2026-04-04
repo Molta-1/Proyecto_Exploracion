@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sebastián Calvo - Daniel Nájera - Eduardo Núñez - Mauricio Ortiz - Josué Redondo" />
 
-<meta name="date" content="2026-04-01" />
+<meta name="date" content="2026-04-03" />
 
 <title>Proyecto Exploración de Datos</title>
 
@@ -354,7 +354,7 @@ display: none;
 <h3 class="subtitle">Profesor: Ronald Córdoba Vega - BD-142</h3>
 <h4 class="author">Sebastián Calvo - Daniel Nájera - Eduardo Núñez -
 Mauricio Ortiz - Josué Redondo</h4>
-<h4 class="date">2026-04-01</h4>
+<h4 class="date">2026-04-03</h4>
 
 </div>
 
@@ -1183,13 +1183,593 @@ ANÁLISIS EXPLORATORIO DE DATOS (EDA)
 </h1>
 <div id="EDA">
 <div class="tit">
-Espacio para Títulos dentro de la información
+Análisis Exploratorio de datos (EDA)
 </div>
-<p><texto></p>
-<p>Dejar espacio en el texto para que se vea separado la parte del
-código</p>
-<p></texto></p>
+<div id="el-análisis-de-datos-exploratorio-eda-tiene-por-objetivo-identificar-las-principales-características-de-un-conjunto-de-datos-mediante-un-número-reducido-de-gráficos-yo-valores." class="section level4">
+<h4>El análisis de datos exploratorio (EDA) tiene por objetivo
+identificar las principales características de un conjunto de datos
+mediante un número reducido de gráficos y/o valores.</h4>
+<div class="tit">
+Carga del dataset
+</div>
 <pre class="r"><code>datos &lt;- read.csv(&#39;fifa_player_performance_market_value.csv&#39;)</code></pre>
+<div class="tit">
+Visualización inicial
+</div>
+<pre class="r"><code>head(datos, 10)</code></pre>
+<pre><code>##    player_id player_name age nationality            club position
+## 1          1    Player_1  23     Germany       Liverpool       ST
+## 2          2    Player_2  36     England    FC Barcelona       ST
+## 3          3    Player_3  31      France        Juventus       RB
+## 4          4    Player_4  27    Portugal Manchester City       LW
+## 5          5    Player_5  24      Brazil       Liverpool      CDM
+## 6          6    Player_6  37   Argentina Manchester City       CM
+## 7          7    Player_7  23 Netherlands       Liverpool       RB
+## 8          8    Player_8  35       Spain   Bayern Munich       LW
+## 9          9    Player_9  39      Brazil    FC Barcelona       GK
+## 10        10   Player_10  27     England       Liverpool       LB
+##    overall_rating potential_rating matches_played goals assists minutes_played
+## 1              65               87              8     6      14           2976
+## 2              90               76             19     3      18           2609
+## 3              75               91             34    12      15           1158
+## 4              90               86             35    18      13            145
+## 5              84               96             41     6       6           2226
+## 6              92               91             35     9       7            263
+## 7              72               66             53    24       6           4299
+## 8              69               97              8    34      17           3101
+## 9              83               90             21    24      23           2106
+## 10             69               92              0    28       5           3080
+##    market_value_million_eur contract_years_left injury_prone
+## 1                    122.51                   3           No
+## 2                     88.47                   5           No
+## 3                     20.24                   3           No
+## 4                    164.29                   0          Yes
+## 5                    121.34                   4           No
+## 6                     98.51                   5          Yes
+## 7                     67.69                   1           No
+## 8                     24.71                   0           No
+## 9                    127.50                   3          Yes
+## 10                   146.55                   1           No
+##    transfer_risk_level
+## 1                  Low
+## 2                 High
+## 3               Medium
+## 4               Medium
+## 5                  Low
+## 6                  Low
+## 7                  Low
+## 8                  Low
+## 9                 High
+## 10                High</code></pre>
+<pre class="r"><code>tail(datos, 10)</code></pre>
+<pre><code>##      player_id player_name age nationality            club position
+## 2791      2791 Player_2791  17     England             PSG       ST
+## 2792      2792 Player_2792  33      France        Juventus       CB
+## 2793      2793 Player_2793  22   Argentina Manchester City       ST
+## 2794      2794 Player_2794  20    Portugal             PSG       LB
+## 2795      2795 Player_2795  36   Argentina             PSG       RW
+## 2796      2796 Player_2796  32     Germany   Bayern Munich       CB
+## 2797      2797 Player_2797  31 Netherlands     Real Madrid       LB
+## 2798      2798 Player_2798  31      Brazil Manchester City       ST
+## 2799      2799 Player_2799  22 Netherlands     Real Madrid       ST
+## 2800      2800 Player_2800  31     Germany       Liverpool      CDM
+##      overall_rating potential_rating matches_played goals assists
+## 2791             89               72             38    39       3
+## 2792             69               86              6     4       2
+## 2793             85               89              3    27       3
+## 2794             86               74             14    13       0
+## 2795             67               93             11    38      11
+## 2796             67               65             47    10      12
+## 2797             67               85              5     7       1
+## 2798             93               88              8    36       8
+## 2799             75               73             34     7       6
+## 2800             72               90              7    11      12
+##      minutes_played market_value_million_eur contract_years_left injury_prone
+## 2791            705                    46.68                   2           No
+## 2792           2358                   102.46                   1           No
+## 2793           3534                   114.10                   3          Yes
+## 2794           3812                   179.96                   0           No
+## 2795           2470                    92.54                   3           No
+## 2796           4067                    99.49                   3           No
+## 2797           3460                    74.87                   4           No
+## 2798           3768                    27.01                   3           No
+## 2799           1934                    54.95                   4           No
+## 2800           2319                    44.83                   5          Yes
+##      transfer_risk_level
+## 2791                 Low
+## 2792              Medium
+## 2793              Medium
+## 2794              Medium
+## 2795                 Low
+## 2796              Medium
+## 2797                 Low
+## 2798              Medium
+## 2799              Medium
+## 2800                 Low</code></pre>
+<div class="tit">
+Carga de Librerías
+</div>
+<pre class="r"><code>library(dplyr)
+library(tidyr)
+library(skimr)</code></pre>
+<pre><code>## Warning: package &#39;skimr&#39; was built under R version 4.5.3</code></pre>
+<div class="tit">
+Inspección inicial
+</div>
+</div>
+<div id="se-visualiza-la-estructura-del-dataset-por-medio-de-una-función-propia-de-dyplr-llamada-glimpse-compararándola-a-str-estudiada-en-clase" class="section level4">
+<h4>Se visualiza la estructura del dataset por medio de una función
+propia de dyplr llamada “glimpse”, compararándola a “str” estudiada en
+clase</h4>
+<pre class="r"><code>glimpse(datos)</code></pre>
+<pre><code>## Rows: 2,800
+## Columns: 16
+## $ player_id                &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14…
+## $ player_name              &lt;chr&gt; &quot;Player_1&quot;, &quot;Player_2&quot;, &quot;Player_3&quot;, &quot;Player_4…
+## $ age                      &lt;int&gt; 23, 36, 31, 27, 24, 37, 23, 35, 39, 27, 27, 3…
+## $ nationality              &lt;chr&gt; &quot;Germany&quot;, &quot;England&quot;, &quot;France&quot;, &quot;Portugal&quot;, &quot;…
+## $ club                     &lt;chr&gt; &quot;Liverpool&quot;, &quot;FC Barcelona&quot;, &quot;Juventus&quot;, &quot;Man…
+## $ position                 &lt;chr&gt; &quot;ST&quot;, &quot;ST&quot;, &quot;RB&quot;, &quot;LW&quot;, &quot;CDM&quot;, &quot;CM&quot;, &quot;RB&quot;, &quot;L…
+## $ overall_rating           &lt;int&gt; 65, 90, 75, 90, 84, 92, 72, 69, 83, 69, 90, 7…
+## $ potential_rating         &lt;int&gt; 87, 76, 91, 86, 96, 91, 66, 97, 90, 92, 83, 6…
+## $ matches_played           &lt;int&gt; 8, 19, 34, 35, 41, 35, 53, 8, 21, 0, 4, 8, 36…
+## $ goals                    &lt;int&gt; 6, 3, 12, 18, 6, 9, 24, 34, 24, 28, 11, 39, 1…
+## $ assists                  &lt;int&gt; 14, 18, 15, 13, 6, 7, 6, 17, 23, 5, 18, 3, 22…
+## $ minutes_played           &lt;int&gt; 2976, 2609, 1158, 145, 2226, 263, 4299, 3101,…
+## $ market_value_million_eur &lt;dbl&gt; 122.51, 88.47, 20.24, 164.29, 121.34, 98.51, …
+## $ contract_years_left      &lt;int&gt; 3, 5, 3, 0, 4, 5, 1, 0, 3, 1, 0, 2, 5, 5, 3, …
+## $ injury_prone             &lt;chr&gt; &quot;No&quot;, &quot;No&quot;, &quot;No&quot;, &quot;Yes&quot;, &quot;No&quot;, &quot;Yes&quot;, &quot;No&quot;, &quot;…
+## $ transfer_risk_level      &lt;chr&gt; &quot;Low&quot;, &quot;High&quot;, &quot;Medium&quot;, &quot;Medium&quot;, &quot;Low&quot;, &quot;Lo…</code></pre>
+<pre class="r"><code>str(datos)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    2800 obs. of  16 variables:
+##  $ player_id               : int  1 2 3 4 5 6 7 8 9 10 ...
+##  $ player_name             : chr  &quot;Player_1&quot; &quot;Player_2&quot; &quot;Player_3&quot; &quot;Player_4&quot; ...
+##  $ age                     : int  23 36 31 27 24 37 23 35 39 27 ...
+##  $ nationality             : chr  &quot;Germany&quot; &quot;England&quot; &quot;France&quot; &quot;Portugal&quot; ...
+##  $ club                    : chr  &quot;Liverpool&quot; &quot;FC Barcelona&quot; &quot;Juventus&quot; &quot;Manchester City&quot; ...
+##  $ position                : chr  &quot;ST&quot; &quot;ST&quot; &quot;RB&quot; &quot;LW&quot; ...
+##  $ overall_rating          : int  65 90 75 90 84 92 72 69 83 69 ...
+##  $ potential_rating        : int  87 76 91 86 96 91 66 97 90 92 ...
+##  $ matches_played          : int  8 19 34 35 41 35 53 8 21 0 ...
+##  $ goals                   : int  6 3 12 18 6 9 24 34 24 28 ...
+##  $ assists                 : int  14 18 15 13 6 7 6 17 23 5 ...
+##  $ minutes_played          : int  2976 2609 1158 145 2226 263 4299 3101 2106 3080 ...
+##  $ market_value_million_eur: num  122.5 88.5 20.2 164.3 121.3 ...
+##  $ contract_years_left     : int  3 5 3 0 4 5 1 0 3 1 ...
+##  $ injury_prone            : chr  &quot;No&quot; &quot;No&quot; &quot;No&quot; &quot;Yes&quot; ...
+##  $ transfer_risk_level     : chr  &quot;Low&quot; &quot;High&quot; &quot;Medium&quot; &quot;Medium&quot; ...</code></pre>
+<div class="tit">
+Medidas de Posición
+</div>
+</div>
+<div id="estadísticas-básicas-usando-summary-vs-skim" class="section level4">
+<h4>Estadísticas básicas usando “summary” vs “skim”</h4>
+<pre class="r"><code>summary(datos)</code></pre>
+<pre><code>##    player_id      player_name             age        nationality       
+##  Min.   :   1.0   Length:2800        Min.   :17.00   Length:2800       
+##  1st Qu.: 700.8   Class :character   1st Qu.:22.00   Class :character  
+##  Median :1400.5   Mode  :character   Median :28.00   Mode  :character  
+##  Mean   :1400.5                      Mean   :27.95                     
+##  3rd Qu.:2100.2                      3rd Qu.:34.00                     
+##  Max.   :2800.0                      Max.   :39.00                     
+##      club             position         overall_rating  potential_rating
+##  Length:2800        Length:2800        Min.   :60.00   Min.   :65.00   
+##  Class :character   Class :character   1st Qu.:68.00   1st Qu.:73.00   
+##  Mode  :character   Mode  :character   Median :77.00   Median :82.00   
+##                                        Mean   :76.87   Mean   :81.56   
+##                                        3rd Qu.:85.00   3rd Qu.:90.00   
+##                                        Max.   :94.00   Max.   :98.00   
+##  matches_played      goals          assists      minutes_played
+##  Min.   : 0.00   Min.   : 0.00   Min.   : 0.00   Min.   :   0  
+##  1st Qu.:13.75   1st Qu.: 9.00   1st Qu.: 6.00   1st Qu.:1131  
+##  Median :27.00   Median :19.00   Median :12.00   Median :2251  
+##  Mean   :27.14   Mean   :19.26   Mean   :12.02   Mean   :2250  
+##  3rd Qu.:41.00   3rd Qu.:30.00   3rd Qu.:18.00   3rd Qu.:3366  
+##  Max.   :54.00   Max.   :39.00   Max.   :24.00   Max.   :4497  
+##  market_value_million_eur contract_years_left injury_prone      
+##  Min.   :  0.67           Min.   :0.000       Length:2800       
+##  1st Qu.: 45.35           1st Qu.:1.000       Class :character  
+##  Median : 89.17           Median :3.000       Mode  :character  
+##  Mean   : 90.57           Mean   :2.528                         
+##  3rd Qu.:136.68           3rd Qu.:4.000                         
+##  Max.   :179.96           Max.   :5.000                         
+##  transfer_risk_level
+##  Length:2800        
+##  Class :character   
+##  Mode  :character   
+##                     
+##                     
+## </code></pre>
+<pre class="r"><code>skim(datos)</code></pre>
+<table>
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">datos</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">2800</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">16</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">character</td>
+<td align="left">6</td>
+</tr>
+<tr class="odd">
+<td align="left">numeric</td>
+<td align="left">10</td>
+</tr>
+<tr class="even">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="12%" />
+<col width="17%" />
+<col width="5%" />
+<col width="5%" />
+<col width="7%" />
+<col width="11%" />
+<col width="14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">empty</th>
+<th align="right">n_unique</th>
+<th align="right">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">player_name</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">8</td>
+<td align="right">11</td>
+<td align="right">0</td>
+<td align="right">2800</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">nationality</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">5</td>
+<td align="right">11</td>
+<td align="right">0</td>
+<td align="right">8</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">club</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">15</td>
+<td align="right">0</td>
+<td align="right">7</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">position</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">3</td>
+<td align="right">0</td>
+<td align="right">9</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">injury_prone</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">3</td>
+<td align="right">0</td>
+<td align="right">2</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">transfer_risk_level</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">6</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table>
+<colgroup>
+<col width="22%" />
+<col width="9%" />
+<col width="12%" />
+<col width="7%" />
+<col width="7%" />
+<col width="5%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="5%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">player_id</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1400.50</td>
+<td align="right">808.43</td>
+<td align="right">1.00</td>
+<td align="right">700.75</td>
+<td align="right">1400.50</td>
+<td align="right">2100.25</td>
+<td align="right">2800.00</td>
+<td align="left">▇▇▇▇▇</td>
+</tr>
+<tr class="even">
+<td align="left">age</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">27.95</td>
+<td align="right">6.75</td>
+<td align="right">17.00</td>
+<td align="right">22.00</td>
+<td align="right">28.00</td>
+<td align="right">34.00</td>
+<td align="right">39.00</td>
+<td align="left">▇▆▇▆▇</td>
+</tr>
+<tr class="odd">
+<td align="left">overall_rating</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">76.87</td>
+<td align="right">9.92</td>
+<td align="right">60.00</td>
+<td align="right">68.00</td>
+<td align="right">77.00</td>
+<td align="right">85.00</td>
+<td align="right">94.00</td>
+<td align="left">▇▇▇▇▇</td>
+</tr>
+<tr class="even">
+<td align="left">potential_rating</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">81.56</td>
+<td align="right">9.76</td>
+<td align="right">65.00</td>
+<td align="right">73.00</td>
+<td align="right">82.00</td>
+<td align="right">90.00</td>
+<td align="right">98.00</td>
+<td align="left">▇▇▇▇▇</td>
+</tr>
+<tr class="odd">
+<td align="left">matches_played</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">27.14</td>
+<td align="right">15.98</td>
+<td align="right">0.00</td>
+<td align="right">13.75</td>
+<td align="right">27.00</td>
+<td align="right">41.00</td>
+<td align="right">54.00</td>
+<td align="left">▇▇▇▇▇</td>
+</tr>
+<tr class="even">
+<td align="left">goals</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">19.26</td>
+<td align="right">11.57</td>
+<td align="right">0.00</td>
+<td align="right">9.00</td>
+<td align="right">19.00</td>
+<td align="right">30.00</td>
+<td align="right">39.00</td>
+<td align="left">▇▇▇▇▇</td>
+</tr>
+<tr class="odd">
+<td align="left">assists</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">12.02</td>
+<td align="right">7.19</td>
+<td align="right">0.00</td>
+<td align="right">6.00</td>
+<td align="right">12.00</td>
+<td align="right">18.00</td>
+<td align="right">24.00</td>
+<td align="left">▇▇▇▇▇</td>
+</tr>
+<tr class="even">
+<td align="left">minutes_played</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">2250.10</td>
+<td align="right">1295.46</td>
+<td align="right">0.00</td>
+<td align="right">1131.25</td>
+<td align="right">2251.00</td>
+<td align="right">3366.25</td>
+<td align="right">4497.00</td>
+<td align="left">▇▇▇▇▇</td>
+</tr>
+<tr class="odd">
+<td align="left">market_value_million_eur</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">90.57</td>
+<td align="right">52.08</td>
+<td align="right">0.67</td>
+<td align="right">45.35</td>
+<td align="right">89.17</td>
+<td align="right">136.68</td>
+<td align="right">179.96</td>
+<td align="left">▇▇▇▇▇</td>
+</tr>
+<tr class="even">
+<td align="left">contract_years_left</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">2.53</td>
+<td align="right">1.70</td>
+<td align="right">0.00</td>
+<td align="right">1.00</td>
+<td align="right">3.00</td>
+<td align="right">4.00</td>
+<td align="right">5.00</td>
+<td align="left">▇▅▃▅▅</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="verificación-de-los-datos-vistos-en-skim-na-por-columna" class="section level4">
+<h4>Verificación de los datos vistos en skim ( NA por columna )</h4>
+<pre class="r"><code># Conteo de NA por columna
+na_count &lt;- colSums(is.na(datos))
+na_count</code></pre>
+<pre><code>##                player_id              player_name                      age 
+##                        0                        0                        0 
+##              nationality                     club                 position 
+##                        0                        0                        0 
+##           overall_rating         potential_rating           matches_played 
+##                        0                        0                        0 
+##                    goals                  assists           minutes_played 
+##                        0                        0                        0 
+## market_value_million_eur      contract_years_left             injury_prone 
+##                        0                        0                        0 
+##      transfer_risk_level 
+##                        0</code></pre>
+<div class="tit">
+Limpiando el DataSet (Según Limpieza)
+</div>
+<pre class="r"><code>datos_limpio &lt;- datos %&gt;%
+  # Elimina filas duplicadas basadas en el ID del jugador, usamos keep_all para tener todos los demas registros
+  distinct(player_id, .keep_all = TRUE) %&gt;%
+  
+  # Manejo de valores null o NA (faltantes)
+  # En este caso, eliminamos filas donde falten datos críticos como el nombre, club o en efecto el valor de mercado
+  drop_na(player_name, club, market_value_million_eur) %&gt;%
+  
+  # En este otro reemplazamos los NAs que se encuentran columnas numéricas por la mediana o un valor fijo (0)
+  mutate(
+    matches_played = replace_na(matches_played, 0),
+    goals = replace_na(goals, 0),
+    assists = replace_na(assists, 0)
+  ) %&gt;%
+  
+  # Estandarización de texto (Convertir a mayúsculas nombres de clubes y países entre otros valores de texto)
+  mutate(
+    nationality = toupper(nationality),
+    club = toupper(club),
+    transfer_risk_level = toupper(transfer_risk_level),
+    injury_prone = toupper(injury_prone)
+  ) %&gt;%
+  
+  # Filtrar datos que podrían llegar a considerarse incosistentes, en este caso la edad el jugador que pueda salirse del rango permitido
+  filter(age &gt;= 15 &amp; age &lt;= 50)</code></pre>
+</div>
+<div id="visualización-datos-limpios" class="section level4">
+<h4>Visualización datos limpios</h4>
+<pre class="r"><code>head(datos_limpio, 2)</code></pre>
+<pre><code>##   player_id player_name age nationality         club position overall_rating
+## 1         1    Player_1  23     GERMANY    LIVERPOOL       ST             65
+## 2         2    Player_2  36     ENGLAND FC BARCELONA       ST             90
+##   potential_rating matches_played goals assists minutes_played
+## 1               87              8     6      14           2976
+## 2               76             19     3      18           2609
+##   market_value_million_eur contract_years_left injury_prone transfer_risk_level
+## 1                   122.51                   3           NO                 LOW
+## 2                    88.47                   5           NO                HIGH</code></pre>
+<pre class="r"><code>tail(datos_limpio, 2)</code></pre>
+<pre><code>##      player_id player_name age nationality        club position overall_rating
+## 2799      2799 Player_2799  22 NETHERLANDS REAL MADRID       ST             75
+## 2800      2800 Player_2800  31     GERMANY   LIVERPOOL      CDM             72
+##      potential_rating matches_played goals assists minutes_played
+## 2799               73             34     7       6           1934
+## 2800               90              7    11      12           2319
+##      market_value_million_eur contract_years_left injury_prone
+## 2799                    54.95                   4           NO
+## 2800                    44.83                   5          YES
+##      transfer_risk_level
+## 2799              MEDIUM
+## 2800                 LOW</code></pre>
+</div>
+<div id="removiendo-columna-player_id" class="section level4">
+<h4>Removiendo columna Player_Id</h4>
+<pre class="r"><code>datos_limpio &lt;- datos_limpio %&gt;% select(-player_id)
+head(datos_limpio, 2)</code></pre>
+<pre><code>##   player_name age nationality         club position overall_rating
+## 1    Player_1  23     GERMANY    LIVERPOOL       ST             65
+## 2    Player_2  36     ENGLAND FC BARCELONA       ST             90
+##   potential_rating matches_played goals assists minutes_played
+## 1               87              8     6      14           2976
+## 2               76             19     3      18           2609
+##   market_value_million_eur contract_years_left injury_prone transfer_risk_level
+## 1                   122.51                   3           NO                 LOW
+## 2                    88.47                   5           NO                HIGH</code></pre>
+<div id="la-variable-player_id-fue-eliminada-debido-a-que-corresponde-a-un-identificador-único-y-no-aporta-información-analítica-relevante-para-el-modelado-ni-el-análisis-exploratorio." class="section level5">
+<h5>La variable player_id fue eliminada debido a que corresponde a un
+identificador único y no aporta información analítica relevante para el
+modelado ni el análisis exploratorio.</h5>
+<div class="tit">
+Medidas cuantitativas de resumen
+</div>
+<div class="tit">
+Visualización de datos
+</div>
+</div>
+</div>
 </div>
 </div>
 <div id="clus" class="contenido-dinamico2">

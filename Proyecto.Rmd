@@ -657,17 +657,107 @@ tail(df_limpio,15)
 <h1> ANÁLISIS EXPLORATORIO DE DATOS (EDA) </h1> 
 
 <div id="EDA">
-<div class="tit"> Espacio para Títulos dentro de la información </div>
-
-<texto> 
-
-Prueba texto en EDA, para agregar cambios
+<div class="tit"> Análisis Exploratorio de datos (EDA)</div>
 
 
-</texto>
+#### El análisis de datos exploratorio (EDA) tiene por objetivo identificar las principales características de un conjunto de datos mediante un número reducido de gráficos y/o valores.
+
+
+<div class="tit"> Carga del dataset </div>
+
 ```{r}
 datos <- read.csv('fifa_player_performance_market_value.csv')
 ```
+<div class="tit"> Visualización inicial</div>
+```{r}
+head(datos, 10)
+tail(datos, 10)
+```
+<div class="tit"> Carga de Librerías</div>
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(skimr)
+```
+
+<div class="tit">Inspección inicial</div>
+
+#### Se visualiza la estructura del dataset por medio de una función propia de dyplr llamada “glimpse”, compararándola a "str" estudiada en clase
+
+```{r}
+glimpse(datos)
+str(datos)
+```
+
+<div class="tit">Medidas de Posición</div>
+
+#### Estadísticas básicas usando "summary" vs "skim" 
+
+
+```{r}
+
+summary(datos)
+skim(datos)
+
+```
+
+#### Verificación de los datos vistos en skim ( NA por columna )
+```{r}
+# Conteo de NA por columna
+na_count <- colSums(is.na(datos))
+na_count
+```
+
+<div class="tit">Limpiando el DataSet (Según Limpieza) </div>
+```{r}
+datos_limpio <- datos %>%
+  # Elimina filas duplicadas basadas en el ID del jugador, usamos keep_all para tener todos los demas registros
+  distinct(player_id, .keep_all = TRUE) %>%
+  
+  # Manejo de valores null o NA (faltantes)
+  # En este caso, eliminamos filas donde falten datos críticos como el nombre, club o en efecto el valor de mercado
+  drop_na(player_name, club, market_value_million_eur) %>%
+  
+  # En este otro reemplazamos los NAs que se encuentran columnas numéricas por la mediana o un valor fijo (0)
+  mutate(
+    matches_played = replace_na(matches_played, 0),
+    goals = replace_na(goals, 0),
+    assists = replace_na(assists, 0)
+  ) %>%
+  
+  # Estandarización de texto (Convertir a mayúsculas nombres de clubes y países entre otros valores de texto)
+  mutate(
+    nationality = toupper(nationality),
+    club = toupper(club),
+    transfer_risk_level = toupper(transfer_risk_level),
+    injury_prone = toupper(injury_prone)
+  ) %>%
+  
+  # Filtrar datos que podrían llegar a considerarse incosistentes, en este caso la edad el jugador que pueda salirse del rango permitido
+  filter(age >= 15 & age <= 50)
+```
+
+
+#### Visualización datos limpios
+```{r}
+head(datos_limpio, 2)
+tail(datos_limpio, 2)
+```
+
+#### Removiendo columna Player_Id
+
+```{r}
+datos_limpio <- datos_limpio %>% select(-player_id)
+head(datos_limpio, 2)
+
+```
+
+##### La variable player_id fue eliminada debido a que corresponde a un identificador único y no aporta información analítica relevante para el modelado ni el análisis exploratorio.
+
+<div class="tit"> Medidas cuantitativas de resumen </div>
+
+<div class="tit"> Visualización de datos </div>
 
 </div>
 </div>
