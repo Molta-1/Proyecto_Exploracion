@@ -1063,8 +1063,6 @@ ggplot(datos_limpio_eda, aes(x = market_value_million_eur)) +
 </texto>
 
 ```{r, fig.align="center"}
-
-
 hist(
   datos_limpio_eda$matches_played,
   breaks = 20,
@@ -1072,8 +1070,6 @@ hist(
   main = "Distribución de partidos jugados",
   xlab = "Partidos jugados"
 )
-
-
 ```
 
 <div class="tit"> Goles vs Asistencias</div>
@@ -1090,7 +1086,6 @@ datos_limpio_eda <- datos_limpio_eda %>%
   )
 
 
-
 ggplot(datos_limpio_eda, aes(x = goals_90, y = assists_90)) +
   geom_point(alpha = 0.6, color = "#FF9149") +
   labs(
@@ -1099,9 +1094,6 @@ ggplot(datos_limpio_eda, aes(x = goals_90, y = assists_90)) +
     y = "Asistencias por 90"
   ) +
   theme_minimal()
-
-
-
 ```
 
 <div class="tit"> Muestra jugador más destacado segun Goles y Asistencias </div>
@@ -1144,8 +1136,6 @@ datos_limpio_eda %>%
 </texto>
 
 ```{r, fig.align="center"}
-
-
 boxplot(
   market_value_million_eur ~ injury_prone,
   data = datos_limpio_eda,
@@ -1173,8 +1163,6 @@ ggplot(datos_limpio_eda, aes(x = transfer_risk_level, y = market_value_million_e
 
 
 ```{r, fig.align="center"}
-
-
 ggplot(datos_limpio_eda,
        aes(x = overall_rating, y = market_value_million_eur)) +
   geom_point(alpha = 0.6, color = "#91C8E4") +
@@ -1185,13 +1173,10 @@ ggplot(datos_limpio_eda,
     y = "Valor de mercado (millones €, escala log)"
   ) +
   theme_minimal()
-
 ```
 
 
 ```{r, fig.align="center"}
-
-
 ggplot(datos_limpio_sl,
        aes(x = overall_rating, y = market_value_million_eur)) +
   geom_point(alpha = 0.6, color = "steelblue") +
@@ -1202,15 +1187,6 @@ ggplot(datos_limpio_sl,
     y = "Valor de mercado (millones €)"
   ) +
   theme_minimal()
-
-```
-
-
-```{r, fig.align="center"}
-```
-
-
-```{r, fig.align="center"}
 ```
 
 </div>
@@ -1220,16 +1196,61 @@ ggplot(datos_limpio_sl,
 <h1> CLUSTERIZACIÓN </h1> 
 
 <div id="clusteri">
-<div class="tit"> Espacio para Títulos dentro de la información </div>
+<div class="tit"> Columnas a Utilizar </div>
 
 <texto> 
 
-Dejar espacio en el texto para que se vea separado la parte del código
+Antes de empezar a realizar la clusterización primero debemos de buscar cuales son las columnas con las que vamos a trabajar, esto se realiza por medio del ACP pero primero solamente seleccionaremos las que sean de carácter numérico.
+
+Debido al proceso que se realiza para el ACP debemos de utilizar dichas variables de carácter numérico son las que nos dan el valor que necesitamos para su realización.
+
+</texto>
+
+<div class="tit"> Paquetes a Utilizar </div>
+<texto> 
 
 </texto>
 ```{r}
-datos <- read.csv('fifa_player_performance_market_value.csv')
+suppressWarnings(library(factoextra))
 ```
 
+```{r}
+# Filtrar solo columnas numéricas
+
+df_numericos <- datos_limpio_eda %>%
+  select(where(is.numeric))
+
+# APLICAR ACP, scale. = TRUE es fundamental para normalizar los datos
+pca_resultado <- prcomp(df_numericos, center = TRUE, scale. = TRUE)
+
+# Visualizar resultados
+summary(pca_resultado)
+
+# Ver las cargas (loadings) de las variables en los componentes
+head(pca_resultado$rotation)
+```
+
+</texto>
+
+<texto> 
+
+Una vez terminado el proceso vamos a visualizar información de utilidad como la desviación estándar que es con lo cual se realiza la división a la hora de realizar el ACP o la proporción de varianza la cual nos dice que cuantos datos de originales llegó a capturar.
+
+Ahora que tenemos realizado el PCA queremos ver de manera visual los elementos con los cuales podemos trabajar por lo cual gracias a la librería "factoextra" podemos mostrarlo de una manera mas clara.
+
+</texto>
+
+```{r}
+# 1. Gráfico de individuos (puntos)
+fviz_pca_ind(pca_resultado,
+             col.ind = "cos2", # Color por calidad de representación
+             gradient.cols = c("#1B3C53", "#91C8E4", "#FC4E07"),
+             repel = TRUE)     # Evita que el texto se amontone
+
+# 2. Gráfico de variables (flechas)
+fviz_pca_var(pca_resultado,
+             col.var = "contrib", # Color por cuánto contribuyen al componente
+             gradient.cols = c("#1B3C53", "#91C8E4", "#FC4E07"))
+```
 </div>
 </div>
