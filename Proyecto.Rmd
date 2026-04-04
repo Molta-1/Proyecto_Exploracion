@@ -661,7 +661,7 @@ tail(df_limpio,15)
 
 <texto> 
 
-Dejar espacio en el texto para que se vea separado la parte del código
+Prueba texto en EDA 
 
 
 </texto>
