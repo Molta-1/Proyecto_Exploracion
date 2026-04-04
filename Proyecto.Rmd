@@ -657,16 +657,480 @@ tail(df_limpio,15)
 <h1> ANÁLISIS EXPLORATORIO DE DATOS (EDA) </h1> 
 
 <div id="EDA">
-<div class="tit"> Espacio para Títulos dentro de la información </div>
-
-<texto> 
-
-Dejar espacio en el texto para que se vea separado la parte del código
+<div class="tit"> Análisis Exploratorio de datos (EDA)</div>
 
 
-</texto>
+#### El análisis de datos exploratorio (EDA) tiene por objetivo identificar las principales características de un conjunto de datos mediante un número reducido de gráficos y/o valores.
+
+
+<div class="tit"> Carga del dataset </div>
+
 ```{r}
 datos <- read.csv('fifa_player_performance_market_value.csv')
+```
+<div class="tit"> Visualización inicial</div>
+```{r}
+head(datos, 10)
+tail(datos, 10)
+```
+<div class="tit"> Carga de Librerías</div>
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(skimr)
+library(tibble)
+library(ggplot2)
+
+```
+
+<div class="tit">Inspección inicial</div>
+
+#### Se visualiza la estructura del dataset por medio de una función propia de dyplr llamada “glimpse”, compararándola a "str" estudiada en clase
+
+```{r}
+glimpse(datos)
+str(datos)
+```
+
+<div class="tit">Medidas de Posición</div>
+
+#### Estadísticas básicas usando "summary" vs "skim" 
+
+
+```{r}
+
+summary(datos)
+skim(datos)
+
+```
+
+#### Verificación de los datos vistos en skim ( NA por columna )
+```{r}
+# Conteo de NA por columna
+na_count <- colSums(is.na(datos))
+na_count
+```
+
+<div class="tit">Limpiando el DataSet (Según Limpieza) y agregando nuevos criterios </div>
+```{r}
+library(dplyr)
+library(tidyr)
+
+datos_limpio_sl <- datos %>%
+  # Eliminar duplicados por ID del jugador
+  distinct(player_id, .keep_all = TRUE) %>%
+  
+  # Eliminar registros con NA en variables críticas
+  drop_na(player_name, club, market_value_million_eur) %>%
+  
+  # Reemplazar NA en variables numéricas clave
+  mutate(
+    matches_played = replace_na(matches_played, 0),
+    goals = replace_na(goals, 0),
+    assists = replace_na(assists, 0)
+  ) %>%
+  
+  # Estandarización de texto
+  mutate(
+    nationality = toupper(nationality),
+    club = toupper(club),
+    transfer_risk_level = toupper(transfer_risk_level),
+    injury_prone = toupper(injury_prone)
+  ) %>%
+  
+  # Filtrar edades fuera de rango lógico
+  filter(age >= 15 & age <= 50) %>%
+  
+  # Eliminar inconsistencias lógicas básicas
+  filter(
+    !(matches_played == 0 & minutes_played > 0) &
+    !(matches_played > 0 & minutes_played == 0) &
+    !(matches_played == 0 & goals > 0) &
+    !(matches_played == 0 & assists > 0) &
+    !(goals > 2 & minutes_played < 10) &
+    !(goals > minutes_played)
+  ) %>%
+  
+  # Crear métrica normalizada de rendimiento ofensivo
+  mutate(goals_90 = goals / minutes_played * 90)
+
+# Eliminación estadística de outliers usando método IQR sobre goals_90
+Q1 <- quantile(datos_limpio_sl$goals_90, 0.25, na.rm = TRUE)
+Q3 <- quantile(datos_limpio_sl$goals_90, 0.75, na.rm = TRUE)
+IQR_goals <- Q3 - Q1
+
+limite_superior <- Q3 + 1.5 * IQR_goals
+
+datos_limpio_sl <- datos_limpio_sl %>%
+  filter(goals_90 <= limite_superior)
+
+```
+
+
+#### Visualización datos limpios
+```{r}
+head(datos_limpio_sl, 2)
+tail(datos_limpio_sl, 2)
+```
+
+#### Removiendo columna Player_Id
+
+```{r}
+datos_limpio_eda <- datos_limpio_sl %>% select(-player_id)
+head(datos_limpio_eda, 2)
+
+```
+
+##### La variable player_id fue eliminada debido a que corresponde a un identificador único y no aporta información analítica relevante para el modelado ni el análisis exploratorio.
+
+<div class="tit"> Medidas cuantitativas de resumen </div>
+
+##### Se utilizan métricas derivadas para normalizar el rendimiento y evaluar el potencial de crecimiento de los jugadores, mejorando la comparabilidad entre observaciones.
+
+```{r}
+
+datos_limpio_eda <- datos_limpio_eda %>%
+  mutate(
+    gap_potential = potential_rating - overall_rating,
+    goals_90 = goals / minutes_played * 90
+  )
+
+
+resumen_cuantitativo <- tibble(
+  variable = c("Edad","Overall rating","Potential rating","Gap potencial (Potential - Overall)","Partidos jugados","Goles","Asistencias","Goles por 90 minutos","Minutos jugados","Valor de mercado (millones €)","Años de contrato restantes"),
+  
+  medida_usada = c("Mediana","Media","Media","Media","Mediana","Media","Media","Media","Mediana","Mediana","Media"),
+  
+  valor = round(c(
+    median(datos_limpio_eda$age, na.rm = TRUE),
+    mean(datos_limpio_eda$overall_rating, na.rm = TRUE),
+    mean(datos_limpio_eda$potential_rating, na.rm = TRUE),
+    mean(datos_limpio_eda$gap_potential, na.rm = TRUE),
+    median(datos_limpio_eda$matches_played, na.rm = TRUE),
+    mean(datos_limpio_eda$goals, na.rm = TRUE),
+    mean(datos_limpio_eda$assists, na.rm = TRUE),
+    mean(datos_limpio_eda$goals_90, na.rm = TRUE),
+    median(datos_limpio_eda$minutes_played, na.rm = TRUE),
+    median(datos_limpio_eda$market_value_million_eur, na.rm = TRUE),
+    mean(datos_limpio_eda$contract_years_left, na.rm = TRUE)
+  ), 2)
+)
+
+# Mostrar resultado
+resumen_cuantitativo
+
+```
+
+
+
+```{r}
+colnames(datos_limpio_eda)
+```
+
+
+<div class="tit"> Visualización de datos </div>
+
+#### Cantidad de jugadores por nacionalidad (y porcentaje) 
+
+```{r, fig.align="center"}
+
+par(mar = c(9, 5, 4, 2))  # abajo, izquierda, arriba, derecha
+
+# Conteo y porcentajes
+conteo_nat <- sort(table(datos_limpio_eda$nationality), decreasing = TRUE)
+porcentaje <- round(conteo_nat / sum(conteo_nat) * 100, 1)
+
+# Gráfico de barras
+barplot_height <- barplot(
+  conteo_nat,
+  las = 2,                      
+  col = "steelblue",
+  main = "Distribución de jugadores por nacionalidad",
+  ylab = "Número de jugadores",
+  ylim = c(0, max(conteo_nat) * 1.15)
+)
+
+mtext(
+  "Nacionalidad",
+  side = 1,
+  line = 7
+)
+
+text(
+  x = barplot_height,
+  y = conteo_nat / 2,
+  labels = paste0(porcentaje, "%"),
+  col = "white",
+  cex = 0.9,
+  font = 2
+)
+
+
+```
+
+##### Verificación cantidades
+```{r}
+conteo_nat
+sum(conteo_nat)
+```
+
+#### Cantidad de jugadores por posición 
+
+```{r, fig.align="center"}
+
+conteo_pos <- sort(table(datos_limpio_eda$position), decreasing = TRUE)
+
+barplot(
+  conteo_pos,
+  las = 2,
+  col = "steelblue",
+  main = "Cantidad de jugadores por posición",
+  ylab = "Número de jugadores",
+  xlab = "Posición",
+  ylim = c(0,300)
+)
+```
+
+##### Verificación cantidades
+```{r}
+max(table(datos_limpio_eda$position))
+min(conteo_pos)
+conteo_pos
+
+```
+
+#### Boxplot de Goles (goals) por posición
+
+```{r, fig.align="center"}
+boxplot(
+  goals ~ position,
+  data = datos_limpio_eda,
+  las = 2,
+  col = "lightgreen",
+  main = "Distribución de goles por posición",
+  ylab = "Goles",
+  xlab = "Posición"
+)
+```
+
+
+```{r, fig.align="center"}
+ggplot(datos_limpio_eda, aes(x = position, y = market_value_million_eur)) +
+  geom_boxplot(fill = "gold") +
+  labs(
+    title = "Valor de mercado por posición",
+    x = "Posición",
+    y = "Valor (millones €)"
+  ) +
+  theme_minimal()
+```
+
+#### Overal Rating
+
+```{r, fig.align="center"}
+hist(
+  datos_limpio_eda$overall_rating,
+  col = "steelblue",
+  main = "Distribución del overall rating",
+  xlab = "Overall rating",
+  ylab = "Frecuencia",
+  ylim = c(0,200)
+)
+
+```
+
+#### Overal Rating vs Potencial ( Puede mejorar ? )
+```{r, fig.align="center"}
+
+brecha_potencial <- datos_limpio_eda$potential_rating - datos_limpio_eda$overall_rating
+
+hist(
+  brecha_potencial,
+  breaks = 20,
+  col = "purple",
+  main = "Brecha entre Potential y Overall rating",
+  xlab = "Potencial - Overall Rating",
+  ylab = "Frecuencia"
+)
+
+id_brecha_max <- which.max(brecha_potencial)
+datos_limpio_eda$player_name[id_brecha_max]
+```
+
+Variable minutos jugados
+```{r, fig.align="center"}
+
+datos_limpio_eda %>%
+  arrange(desc(goals)) %>%
+  slice(1:10) %>%
+  select(player_name, goals)
+
+datos_limpio_eda %>%
+  mutate(goals_90 = goals / minutes_played * 90) %>%
+  arrange(desc(goals_90)) %>%
+  slice(1:10) %>%
+  select(player_name, goals, minutes_played, goals_90)
+
+```
+
+#### Distribución según valor de mercado 
+
+```{r, fig.align="center"}
+
+ggplot(datos_limpio_eda, aes(x = market_value_million_eur)) +
+  geom_histogram(bins = 30, fill = "gold", color = "black") +
+  labs(
+    title = "Distribución del valor de mercado",
+    x = "Valor (millones €)",
+    y = "Frecuencia"
+  ) +
+  theme_minimal()
+
+```
+
+Distribución de partidos jugados
+
+```{r, fig.align="center"}
+
+
+hist(
+  datos_limpio_eda$matches_played,
+  breaks = 20,
+  col = "orange",
+  main = "Distribución de partidos jugados",
+  xlab = "Partidos jugados"
+)
+
+
+```
+
+#### Goles vs Asistencias
+
+```{r, fig.align="center"}
+
+datos_limpio_eda <- datos_limpio_eda %>%
+  mutate(
+    goals_90 = goals / minutes_played * 90,
+    assists_90 = assists / minutes_played * 90
+  )
+
+
+
+ggplot(datos_limpio_eda, aes(x = goals_90, y = assists_90)) +
+  geom_point(alpha = 0.6, color = "darkorange") +
+  labs(
+    title = "Goles por 90 vs Asistencias por 90 minutos",
+    x = "Goles por 90",
+    y = "Asistencias por 90"
+  ) +
+  theme_minimal()
+
+
+
+```
+
+#### Muestra jugador más destacado segun Goles y Asistencias 
+
+```{r, fig.align="center"}
+
+top10_goals90 <- datos_limpio_eda %>%
+  mutate(goals_90 = goals / minutes_played * 90,
+         assists_90 = assists / minutes_played * 90) %>%
+  arrange(desc(goals_90)) %>%
+  slice(1:1)
+
+# Gráfico con etiquetas solo para top 10
+datos_limpio_eda %>%
+  mutate(goals_90 = goals / minutes_played * 90,
+         assists_90 = assists / minutes_played * 90) %>%
+  ggplot(aes(x = goals_90, y = assists_90)) +
+  geom_point(alpha = 0.6, color = "darkorange") +
+  geom_text(
+    data = top10_goals90,
+    aes(label = player_name),
+    vjust = -0.5,
+    size = 3,
+    color = "black"
+  ) +
+  labs(
+    title = "Goles por 90 vs Asistencias por 90 minutos",
+    x = "Goles por 90",
+    y = "Asistencias por 90"
+  ) +
+  theme_minimal()
+```
+
+#### Valor de mercado vs Propenso a lesiones
+
+```{r, fig.align="center"}
+
+
+boxplot(
+  market_value_million_eur ~ injury_prone,
+  data = datos_limpio_eda,
+  col = "salmon",
+  main = "Valor de mercado vs Propenso a lesiones",
+  ylab = "Valor (millones €)",
+  xlab = "Propenso a lesiones"
+)
+
+```
+
+
+```{r, fig.align="center"}
+
+ggplot(datos_limpio_eda, aes(x = transfer_risk_level, y = market_value_million_eur)) +
+  geom_boxplot(fill = "tan") +
+  labs(
+    title = "Valor de mercado vs Riesgo de transferencia",
+    x = "Nivel de riesgo",
+    y = "Valor (millones €)"
+  ) +
+  theme_minimal()
+
+```
+
+
+```{r, fig.align="center"}
+
+
+ggplot(datos_limpio_eda,
+       aes(x = overall_rating, y = market_value_million_eur)) +
+  geom_point(alpha = 0.6, color = "darkgreen") +
+  scale_y_log10() +
+  labs(
+    title = "Valor de mercado vs Overall Rating (escala logarítmica)",
+    x = "Overall Rating",
+    y = "Valor de mercado (millones €, escala log)"
+  ) +
+  theme_minimal()
+
+```
+
+
+```{r, fig.align="center"}
+
+
+ggplot(datos_limpio_sl,
+       aes(x = overall_rating, y = market_value_million_eur)) +
+  geom_point(alpha = 0.6, color = "steelblue") +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  labs(
+    title = "Relación entre rendimiento y valor de mercado",
+    x = "Overall Rating",
+    y = "Valor de mercado (millones €)"
+  ) +
+  theme_minimal()
+
+```
+
+
+```{r, fig.align="center"}
+```
+
+
+```{r, fig.align="center"}
 ```
 
 </div>
