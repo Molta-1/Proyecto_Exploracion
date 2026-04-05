@@ -1253,36 +1253,76 @@ fviz_pca_var(pca_resultado,
              gradient.cols = c("#1B3C53", "#91C8E4", "#FC4E07"))
 ```
 
-
+<!--  ================================ -->
 <div class="tit"> Clusterización </div>
 
 <texto>
 
-( * inserte texto explicativo* )
+La clusterización consiste en la agrupación de un conjunto de datos en un grupo llamado "cluster". La idea es que los elementos que tienen similitudes entre sí se agrupen entre ellos y se generen distancias entre elementos con los que no tengan tanta similitud.
+
+El objetivo principal es encontrar patrones que no sean sencillos de detectar a simple vista.
+
+</texto>
+
+
+<texto>
+
+El primer paso es la selección de variables, para óptimos resultados seleccionamos solamente variables numéricas. Se han seleccionado las siguientes columnas: "age", "overall_rating", "potential_rating", "goals", "market_value_million_eur".
+
+</texto>
+
+```{r}
+subconjunto <- datos[, c("age", "overall_rating", "potential_rating", 
+                         "goals", "market_value_million_eur")]
+```
+
+<texto>
+
+
+Una vez seleccionadas las variables que vamos a usar, se deben "escalar", este proceso consiste en transformar las variables numéricas para que todas tengan un rango/escala similar, de forma que se garantiza una correcta formación de grupos.
+
+</texto>
+
+```{r}
+datos_listos <- scale(subconjunto)
+```
+
+<texto>
+
+Para la realización de un Clustering Jerárquico se requiere tomar en cuenta varios pasos.
+
+Inicialmente, se calcula una matriz de distancias, midiendo la distancia "Euclídea" (la cual mide una línea recta entre cada par de jugadores basándose en sus estadísticas). El objetivo de este paso es identificar los jugadores que tienen distancias cercanas al cero para conocer quiénes están más cerca.
+
+</texto>
+
+```{r}
+distancias <- dist(datos_listos, method = "euclidean")
+```
+
+<texto>
+
+Una vez que se calculan las distancias, se emplea un algoritmo de agrupamiento llamado "ward.D2", el cual se encarga de compactar a los grupos para que la varianza interna sea mínima.
 
 </texto>
 
 
 ```{r}
-
-# 1. Creamos el subconjunto con las variables elegidas
-# Elegimos: age, overall_rating, potential_rating, goals, market_value_million_eur
-subconjunto <- datos[, c("age", "overall_rating", "potential_rating", 
-                         "goals", "market_value_million_eur")]
-
-# 2. Escalamos TODAS las variables juntas
-# Esto es vital para que 'market_value' (millones) no aplaste a 'age' (decenas)
-datos_listos <- scale(subconjunto)
-
-
+hc_final <- hclust(distancias, method = "ward.D2")
 ```
 
+<texto>
+
+Para determinar la cantidad óptima de Clusters se puede elaborar una prueba llamada "Codo de Jambu", el cual consiste en un gráfico que valora un rango de valores de Clusters (en este caso de 1 a 20 Clusters), en el cual hay que poner atención al punto donde se genera un "codo" y seguidamente se estabiliza la línea.
+
+La "altura" representa qué tan diferentes eran los grupos antes de unirse, por lo que al graficarlas de mayor a menor buscamos donde se genera el punto de quiebre.
+
+En este caso específico se presentan varios codos (en los puntos 2, 5 y 8) pero como la "inercia" sigue bajando después de ellos, estos quedan descartados, dado que se observa un último codo y con mayor estabilidad en el punto 15.
+
+En síntesis, según este Codo de Jambu, se tienen que usar 15 Clusteres.
+
+</texto>
+
 ```{r}
-# Ejemplo: Clustering Jerárquico
-distancias <- dist(datos_listos, method = "euclidean")
-hc_final <- hclust(distancias, method = "ward.D2")
-
-
 alturas <- sort(hc_final$height, decreasing = TRUE)
 plot(alturas[1:20], type = "b", main = "Codo de Jambú (Jerárquico)", 
      xlab = "Número de Clústeres", ylab = "Inercia / Distancia")
@@ -1290,7 +1330,7 @@ plot(alturas[1:20], type = "b", main = "Codo de Jambú (Jerárquico)",
 
 <texto>
 
-DENDOGRAMA
+Posteriormente, se procede a realizar el Dendograma para visualizar dónde es que los grupos se dividen. 
 
 </texto>
 
@@ -1299,10 +1339,10 @@ DENDOGRAMA
 plot(hc_final, main = "Dendrograma de Jugadores FIFA", labels = FALSE)
 
 # Supongamos que el "Codo" nos sugirió 3 grupos:
-rect.hclust(hc_final, k = 3, border = "red") # Dibuja los rectángulos de corte
+rect.hclust(hc_final, k = 15, border = "red") # Dibuja los rectángulos de corte
 
 # Creamos la variable que dice a qué grupo pertenece cada jugador
-grupos <- cutree(hc_final, k = 3)
+grupos <- cutree(hc_final, k = 15)
 
 # Añadimos los grupos al dataset original para analizarlos
 datos$cluster <- as.factor(grupos)
