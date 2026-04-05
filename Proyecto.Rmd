@@ -1252,5 +1252,67 @@ fviz_pca_var(pca_resultado,
              col.var = "contrib", # Color por cuánto contribuyen al componente
              gradient.cols = c("#1B3C53", "#91C8E4", "#FC4E07"))
 ```
+
+
+<div class="tit"> Clusterización </div>
+
+<texto>
+
+( * inserte texto explicativo* )
+
+</texto>
+
+
+```{r}
+
+# 1. Creamos el subconjunto con las variables elegidas
+# Elegimos: age, overall_rating, potential_rating, goals, market_value_million_eur
+subconjunto <- datos[, c("age", "overall_rating", "potential_rating", 
+                         "goals", "market_value_million_eur")]
+
+# 2. Escalamos TODAS las variables juntas
+# Esto es vital para que 'market_value' (millones) no aplaste a 'age' (decenas)
+datos_listos <- scale(subconjunto)
+
+
+```
+
+```{r}
+# Ejemplo: Clustering Jerárquico
+distancias <- dist(datos_listos, method = "euclidean")
+hc_final <- hclust(distancias, method = "ward.D2")
+
+
+alturas <- sort(hc_final$height, decreasing = TRUE)
+plot(alturas[1:20], type = "b", main = "Codo de Jambú (Jerárquico)", 
+     xlab = "Número de Clústeres", ylab = "Inercia / Distancia")
+```
+
+<texto>
+
+DENDOGRAMA
+
+</texto>
+
+```{r}
+# Dibujar el Dendrograma
+plot(hc_final, main = "Dendrograma de Jugadores FIFA", labels = FALSE)
+
+# Supongamos que el "Codo" nos sugirió 3 grupos:
+rect.hclust(hc_final, k = 3, border = "red") # Dibuja los rectángulos de corte
+
+# Creamos la variable que dice a qué grupo pertenece cada jugador
+grupos <- cutree(hc_final, k = 3)
+
+# Añadimos los grupos al dataset original para analizarlos
+datos$cluster <- as.factor(grupos)
+```
+
 </div>
 </div>
+
+
+
+
+
+
