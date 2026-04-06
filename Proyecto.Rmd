@@ -1348,6 +1348,38 @@ grupos <- cutree(hc_final, k = 15)
 datos$cluster <- as.factor(grupos)
 ```
 
+
+<texto>
+
+Gracias a la clusterización se pueden hacer hallazgos interesantes, como los siguientes:
+
+</texto>
+
+<texto>
+
+En el Cluster número 1 podemos encontrar jugadores que tienen un Valor de Mercado promedio (market_value_million_eur) de 133.19 millones de euros, pero que tienen una valoración general (overall_rating) promedio de 65.37; es decir, que son jugadores cuyos precios son bastante altos pero que su rendimiento es regular, por lo que no sería idónea su contratación.
+
+</texto>
+
+```{r}
+jugadores_cluster_1 <- datos[datos$cluster == 1, c("player_name", "overall_rating", "market_value_million_eur")]
+head(jugadores_cluster_1, 10)
+summary(jugadores_cluster_1)
+```
+
+<texto>
+
+En el Cluster número 9, el cual era el más grande del Dendograma, encontramos jugadores que tienen un Valor de Mercado promedio (market_value_million_eur) de 40.51 millones de euros, pero que tienen una valoración general (overall_rating) promedio de 78.69; es decir, que son jugadores cuyo precio promedio no es tan alto (lo cual los vuelve accesibles para más clubes) y cuya valoración promedio es bastante buena, factores que vuelven a este grupo de jugadores como una buena contratación.
+
+</texto>
+
+
+```{r}
+jugadores_cluster_9 <- datos[datos$cluster == 9, c("player_name", "overall_rating", "market_value_million_eur")]
+head(jugadores_cluster_9, 10)
+summary(jugadores_cluster_9)
+```
+
 </div>
 </div>
 
