@@ -1232,6 +1232,8 @@ head(pca_resultado$rotation)
 
 </texto>
 
+<div class="tit"> Representación Visual </div>
+
 <texto> 
 
 Una vez terminado el proceso vamos a visualizar información de utilidad como la desviación estándar que es con lo cual se realiza la división a la hora de realizar el ACP o la proporción de varianza la cual nos dice que cuantos datos de originales llegó a capturar.
@@ -1252,8 +1254,66 @@ fviz_pca_var(pca_resultado,
              col.var = "contrib", # Color por cuánto contribuyen al componente
              gradient.cols = c("#1B3C53", "#91C8E4", "#FC4E07"))
 ```
+<texto> 
 
-<!--  ================================ -->
+Ahora que tenemos la representación visual de los elementos y las variables entonces ahora vamos a dar una explicación de lo que nos está tratando de decir estos gráfico.
+
+Empezando por el gráfico de los elementos este nos muestra como están distribuidos los elementos en un plano, esto por medio de las dimensiones que obtuvimos anteriormente lo cual nos dice cuanto "peso" posee esto diciéndonos la cantidad de elementos del dataset que tomó, esto nos dice entonces la distribución de los elementos gracias a estas dimensiones.
+
+Ahora en el gráfico tenemos una cantidad inmensa de datos por lo cual es difícil sacar una conclusión a base de esa imagen mas allá del outlier que se ve en la parte inferior.
+
+El segundo gráfico es el de variables el cual nos muestra por medio de un círculo de correlación cuales son las variables que tienen una mayor o menor correlación entre ellas las cuales tienen tres clasificaciones:
+
+</texto>
+
+<div class="tit"> Vectores Juntos: Correlación Positiva </div>
+
+<texto> 
+
+Estas son las variables las cuales sus flechas están muy cercas entre sí formando un ángulo cercano a 0°, un ejemplo de esto es "overall_rating" y "market_value_million_eur"
+
+Esto nos dice que entre mas sube una variable la otra saldrá beneficiada, es decir que crecerá también.
+
+</texto>
+
+<div class="tit"> Vectores Separados: Correlación Negativa </div>
+
+<texto> 
+
+A diferencia de la pasada estas son las variables las cuales sus flechas están muy alejadas entre sí formando un ángulo cercano a 180°, un ejemplo de esto es "overall_rating" y "potential"
+
+Esto nos dice que entre mas sube una variable la otra saldrá perjudicada, es decir que esta va a disminuir.
+
+</texto>
+
+<div class="tit"> Vectores Perpendiculares: Sin Correlación </div>
+
+<texto> 
+
+A diferencia de los anteriores acá las variables tienen un ángulos cercano a 90° además de no afectarse mutuamente de ninguna manera, es decir que si una sube la otra ni sube ni baja es completamente "indiferente" al cambio de la otra variable.
+
+Un ejemplo de esto sería "potential" y "minutes_played", que una está hacia la izquierda y la otra totalmente arriba.
+
+</texto>
+
+<div class="tit"> Longitud de la Flecha </div>
+
+<texto> 
+
+Ahora se va a explicar un punto crucial a la hora de comprender el círculo de correlación el cual es la longitud de la flecha, esto debido a que como se puede visualizar las flechas poseen distintas longitudes pero esto no es meramente estético debido a que entre mas larga la flecha mejor representada está.
+
+En otras palabras entre mas cerca esté del círuclo mejor representación tuvo por las dimensiones escogidas, en este caso "potential" hy "goals_90" son quienes tienen mayor longitud y otras como "assist" o "matches_played" son las que tienen flecha mas corta, es decir están peor representadas. 
+
+</texto>
+
+<div class="tit"> Color: "contrib" </div>
+
+<texto> 
+
+Este último punto es breve pero interesante ya que nos dice que tanto contribuyó una variable en los componentes, entre mas anaranjada mayor contribución tiene (por esto son las mas largas) y las que menos tienen son representadas con un color azul oscuro.
+
+</texto>
+
 <div class="tit"> Clusterización </div>
 
 <texto>
